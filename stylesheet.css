@@ -1,0 +1,22 @@
+.main-cont {
+    position: relative;
+    width: 88vh;
+    height: 88vh;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+}
+.square {
+    width: 11vh;
+    height: 11vh;
+    box-sizing: border-box;
+}
+
+canvas {
+    position: absolute;
+    pointer-events: none;
+    height: 88vh;
+    width: 88vh;
+    border: 1px solid black;
+    box-sizing: border-box;
+}
