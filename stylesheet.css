@@ -17,6 +17,6 @@ canvas {
     pointer-events: none;
     height: 88vh;
     width: 88vh;
-    border: 1px solid black;
+    outline: 1px solid gray;
     box-sizing: border-box;
 }

@@ -1,6 +1,7 @@
 // let ChessBoardPosition = `N0p0P1QbKR00n0kqPpp0000BqN0rbRp000n0B0P000RP0K000rNBQ0p`;
 let ChessBoardPosition =
-    "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
+    // "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
+    "rnbqkbnr000000000000000000000r00000000000000000000000000RNBQKBNR";
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const vh = window.innerHeight / 100;
@@ -23,20 +24,28 @@ function createSquare() {
     }
 }
 
-let highlighted = null;
+let highlighted = [];
 
 function handleClick(e) {
     const divId = e.target.id;
-    if (highlighted !== null) {
-        const prev = document.getElementById(highlighted);
-        prev.style.border = "";
-    }
-    e.target.style.border = "3px yellow solid";
+    const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
 
-    highlighted = divId;
-    if (WhitePiece.includes(ChessBoardPosition[divId])) {
-        possibleMoves(ChessBoardPosition[divId], parseInt(divId));
-    }
+    highlighted.forEach((prev) => {
+        const id = document.getElementById(prev);
+        id.style.border = "";
+    });
+
+    e.target.style.border = "3px blue solid";
+
+    arr.forEach((square) => {
+        const id = document.getElementById(square);
+        id.style.border = "3px dodgerblue double";
+    });
+
+    highlighted = [divId, ...arr];
+    // if (WhitePiece.includes(ChessBoardPosition[divId])) {
+    //     possibleMoves(ChessBoardPosition[divId], parseInt(divId));
+    // }
 }
 
 function possibleMoves(piece, position) {
