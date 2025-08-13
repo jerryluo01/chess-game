@@ -11,7 +11,7 @@ function rookPossibleMoves(color, position, boardPos) {
 
     let positionIndexList = [];
 
-    const directions = [1, -1, -8, 8];
+    // const directions = [1, -1, -8, 8];
     let r = Math.floor(position / 8);
     let c = position % 8;
 
@@ -59,7 +59,7 @@ function bishopPossibleMoves(color, position, boardPos) {
 
     let positionIndexList = [];
 
-    const directions = [9, 7, -9, -7];
+    // const directions = [9, 7, -9, -7];
     let r = Math.floor(position / 8);
     let c = position % 8;
 
@@ -103,7 +103,7 @@ function knightPossibleMoves(color, position, boardPos) {
 
     let positionIndexList = [];
 
-    const directions = [-10, -6, -17, -15, 6, 15, 17, 10];
+    // const directions = [-10, -6, -17, -15, 6, 15, 17, 10];
     let r = Math.floor(position / 8);
     let c = position % 8;
 
@@ -152,7 +152,7 @@ function kingPossibleMoves(color, position, boardPos) {
 
     let positionIndexList = [];
 
-    const directions = [9, 7, -9, -7, 1, -1, 8, -8];
+    // const directions = [9, 7, -9, -7, 1, -1, 8, -8];
     let r = Math.floor(position / 8);
     let c = position % 8;
 
@@ -200,7 +200,7 @@ function queenPossibleMoves(color, position, boardPos) {
 
     let positionIndexList = [];
 
-    const directions = [9, 7, -9, -7, 1, -1, 8, -8];
+    // const directions = [9, 7, -9, -7, 1, -1, 8, -8];
     let r = Math.floor(position / 8);
     let c = position % 8;
 

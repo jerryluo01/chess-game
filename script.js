@@ -1,5 +1,6 @@
-let ChessBoardPosition = `N0p0P1QbKR00n0kqPpp0000BqN0rbRp000n0B0P000RP0K000rNBQ0p`;
-//rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR
+// let ChessBoardPosition = `N0p0P1QbKR00n0kqPpp0000BqN0rbRp000n0B0P000RP0K000rNBQ0p`;
+let ChessBoardPosition =
+    "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const vh = window.innerHeight / 100;
