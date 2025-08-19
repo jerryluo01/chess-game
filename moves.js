@@ -242,6 +242,54 @@ function queenPossibleMoves(color, position, boardPos) {
     return positionIndexList;
 }
 
-function pawnPossibleMoves(color, position, boardPos) {}
+function pawnPossibleMoves(color, position, boardPos) {
+    let allyPiece;
+    let enemyPiece;
+    let directionmult = 1
+    if (color === "W") {
+        allyPiece = "RBNKQP";
+        enemyPiece = "rbnkqp";
+        directionmult = -1
+    } else {
+        enemyPiece = "RBNKQP";
+        allyPiece = "rbnkqp";
+    }
+    let positionIndexList = [];
+
+    const directions = [8,16,7,9];
+    let r = Math.floor(position / 8);
+    let c = position % 8;
+
+    for (let i = 0; i < directions.length; i++) {
+        let potentialIndex = position + directions[i] * directionmult;
+        let potentialRow = Math.floor(potentialIndex / 8);
+        let potentialCol = potentialIndex % 8;
+
+        if (
+            potentialRow < 0 ||
+            potentialRow >= 8 ||
+            potentialCol < 0 ||
+            potentialCol >= 8
+        )
+            continue;
+
+        if (directions[i]*directionmult === 8 * directionmult){
+            if (allyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
+            if (enemyPiece.includes(ChessBoardPosition[potentialIndex])) continue;}
+        else if (directions[i] *directionmult === 16 * directionmult){
+            if (r !== 6 && directionmult === -1) continue;
+            if (r !== 1 && directionmult === 1) continue;
+            if (allyPiece.includes(ChessBoardPosition[potentialIndex]) ||
+                allyPiece.includes(ChessBoardPosition[potentialIndex-(8 * directionmult)])) continue;
+            if (enemyPiece.includes(ChessBoardPosition[potentialIndex])||
+                enemyPiece.includes(ChessBoardPosition[potentialIndex-(8 *directionmult)])) continue;
+        }
+        if (directions[i] * directionmult === 7 * directionmult || directions[i]*directionmult === 9 * directionmult) {
+            if (!enemyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
+        }
+        positionIndexList.push(potentialIndex);
+    }
+    return positionIndexList;
+}
 
 function pawnPromotion(color, position, boardPos) {}
