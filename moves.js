@@ -183,6 +183,28 @@ function kingPossibleMoves(color, position, boardPos) {
         positionIndexList.push(potentialIndex);
         if (enemyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
     }
+    if (color === "W") {
+        console.log(positionIndexList);
+        if (moveLog.every(item => !item.includes('K'))) {
+            if (moveLog.every(item => !item.includes('56R') && ChessBoardPosition[57] === "0" && ChessBoardPosition[58] === "0" && ChessBoardPosition[59] === "0")) {
+                positionIndexList.push(58);
+            }
+            if (moveLog.every(item => !item.includes('63R') && ChessBoardPosition[61] === "0" && ChessBoardPosition[62] === "0" )) {
+                positionIndexList.push(62);
+            }
+        }
+    }
+    if (color === "B") {
+        console.log(positionIndexList);
+        if (moveLog.every(item => !item.includes('k'))) {
+            if (moveLog.every(item => !item.includes('00r') && ChessBoardPosition[1] === "0" && ChessBoardPosition[2] === "0" && ChessBoardPosition[3] === "0")) {
+                positionIndexList.push(2);
+            }
+            if (moveLog.every(item => !item.includes('07r') && ChessBoardPosition[5] === "0" && ChessBoardPosition[6] === "0" )) {
+                positionIndexList.push(6);
+            }
+        }
+    }
     console.log(positionIndexList);
     return positionIndexList;
 }
@@ -238,7 +260,7 @@ function queenPossibleMoves(color, position, boardPos) {
             j++;
         }
     }
-    console.log(positionIndexList);
+    //console.log(positionIndexList);
     return positionIndexList;
 }
 
@@ -285,6 +307,12 @@ function pawnPossibleMoves(color, position, boardPos) {
                 enemyPiece.includes(ChessBoardPosition[potentialIndex-(8 *directionmult)])) continue;
         }
         if (directions[i] * directionmult === 7 * directionmult || directions[i]*directionmult === 9 * directionmult) {
+            if (moveLog.length !== 0){
+                previousMove =  moveLog[moveLog.length - 1];
+                if (Math.abs(parseInt(previousMove.substring(0, 2))-parseInt(previousMove.substring(3)))===16 && (previousMove[2] === "p"|| previousMove[2] === "P") &&
+                    potentialIndex === parseInt(previousMove.substring(3))+(8 * directionmult)){
+                    positionIndexList.push(potentialIndex);}
+                }
             if (!enemyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
         }
         positionIndexList.push(potentialIndex);

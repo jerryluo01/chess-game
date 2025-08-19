@@ -6,9 +6,10 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const vh = window.innerHeight / 100;
 const squareSizePx = 11 * vh;
-const WhitePiece = "RNBKQP";
-const BlackPiece = "rnbkqp";
+let AllyPiece = "RNBKQP";
+//let EnemyPiece = "rnbkqp";
 let selected = false
+let moveLog = []
 
 function createSquare() {
     const cont = document.querySelector(".main-cont");
@@ -25,6 +26,13 @@ function createSquare() {
     }
 }
 
+const castleMoves = {
+    "04k02": (pos) => "0" + pos.substring(1, 3) + "r" + pos.substring(4),
+    "04k06": (pos) => pos.substring(0, 5) + "rk0" + pos.substring(8),
+    "60K58": (pos) => pos.substring(0, 56) + "00KR" + pos.substring(60),
+    "60K62": (pos) => pos.substring(0, 61) + "RK0"
+};
+
 
 
 let highlighted = [];
@@ -33,7 +41,7 @@ let selectedPiece = null;
 
 function handleClick(e) {
     const divId = e.target.id;
-    if ((!selected || ChessBoardPosition[divId] !== "0") && !possMoves.includes(parseInt(divId))) {
+    if (!selected && AllyPiece.includes(ChessBoardPosition[divId]) && !possMoves.includes(parseInt(divId))) {
         console.log("clicked");
         const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
 
@@ -57,12 +65,45 @@ function handleClick(e) {
 
     else{
         if (possMoves.includes(parseInt(divId))){
+            PieceEaten = ChessBoardPosition[parseInt(divId)]
+            console.log(PieceEaten);
+
             ChessBoardPosition = ChessBoardPosition.substring(0, parseInt(divId)) + ChessBoardPosition[selectedPiece] + ChessBoardPosition.substring(parseInt(divId) + 1);
             ChessBoardPosition = ChessBoardPosition.substring(0, selectedPiece) + "0" + ChessBoardPosition.substring(selectedPiece + 1);
 
-            console.log(ChessBoardPosition);
+            iniPos = selectedPiece.toString().padStart(2, '0')
+            ChessPiece = ChessBoardPosition[parseInt(divId)]
+            afterPos = divId.padStart(2, '0')
+
+            RecentMove = iniPos+ChessPiece+afterPos;
+            moveLog.push(RecentMove);
+
+            if (castleMoves[RecentMove]) {
+                ChessBoardPosition = castleMoves[RecentMove](ChessBoardPosition);
+            }
+            if ((Math.abs(parseInt(afterPos)-parseInt(iniPos)) === 7 || Math.abs(parseInt(afterPos)-parseInt(iniPos)) === 9) &&
+                (ChessPiece === "p" || ChessPiece === "P") && (PieceEaten === "0")){
+                    if (ChessPiece === "p"){
+                        console.log("pppppp")
+                        ChessBoardPosition = ChessBoardPosition.substring(0, parseInt(afterPos)-8) + "0" + ChessBoardPosition.substring(parseInt(afterPos)-8 + 1);
+                    }
+                    else{
+                        console.log(afterPos+8)
+                        ChessBoardPosition = ChessBoardPosition.substring(0, parseInt(afterPos)+8) + "0" + ChessBoardPosition.substring(parseInt(afterPos)+8 + 1);
+                    }
+            }
+            //ChessBoardPosition = ChessBoardPosition.substring(0, parseInt(divId)) + ChessBoardPosition[selectedPiece] + ChessBoardPosition.substring(parseInt(divId) + 1);
+            //ChessBoardPosition = ChessBoardPosition.substring(0, selectedPiece) + "0" + ChessBoardPosition.substring(selectedPiece + 1);
+
+
+            //console.log(moveLog);
             positionUpdate(ChessBoardPosition)
             possMoves = []
+            if (AllyPiece == "RNBKQP"){
+                AllyPiece = "rnbkqp";}
+            else{
+                AllyPiece = "RNBKQP";
+            }
         }
         highlighted.forEach((square) => {
             const id = document.getElementById(square);
