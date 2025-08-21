@@ -1,4 +1,4 @@
-function rookPossibleMoves(color, position, boardPos) {
+function rookPossibleMoves(color, position, boardPos=ChessBoardPosition) {
     let allyPiece;
     let enemyPiece;
     if (color === "W") {
@@ -31,22 +31,21 @@ function rookPossibleMoves(color, position, boardPos) {
                 break;
 
             if (
-                (directions[i] == 1 || directions[i] == -1) &&
-                potentialRow != r
+                (directions[i] === 1 || directions[i] === -1) &&
+                potentialRow !== r
             )
                 break;
 
-            if (allyPiece.includes(ChessBoardPosition[potentialIndex])) break;
+            if (allyPiece.includes(boardPos[potentialIndex])) break;
             positionIndexList.push(potentialIndex);
-            if (enemyPiece.includes(ChessBoardPosition[potentialIndex])) break;
+            if (enemyPiece.includes(boardPos[potentialIndex])) break;
             j++;
         }
     }
-    console.log(positionIndexList);
     return positionIndexList;
 }
 
-function bishopPossibleMoves(color, position, boardPos) {
+function bishopPossibleMoves(color, position,boardPos=ChessBoardPosition) {
     let allyPiece;
     let enemyPiece;
     if (color === "W") {
@@ -80,17 +79,15 @@ function bishopPossibleMoves(color, position, boardPos) {
             )
                 break;
 
-            if (allyPiece.includes(ChessBoardPosition[potentialIndex])) break;
+            if (allyPiece.includes(boardPos[potentialIndex])) break;
             positionIndexList.push(potentialIndex);
-            if (enemyPiece.includes(ChessBoardPosition[potentialIndex])) break;
+            if (enemyPiece.includes(boardPos[potentialIndex])) break;
             j++;
         }
     }
-    console.log(positionIndexList);
     return positionIndexList;
 }
-const directions = [-10, -6, -17, -15, 6, 15, 17, 10];
-function knightPossibleMoves(color, position, boardPos) {
+function knightPossibleMoves(color, position,boardPos=ChessBoardPosition) {
     let allyPiece;
     let enemyPiece;
     if (color === "W") {
@@ -133,13 +130,12 @@ function knightPossibleMoves(color, position, boardPos) {
             continue;
         }
 
-        if (allyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
+        if (allyPiece.includes(boardPos[potentialIndex])) continue;
         positionIndexList.push(potentialIndex);
     }
-    console.log(positionIndexList);
     return positionIndexList;
 }
-function kingPossibleMoves(color, position, boardPos) {
+function kingPossibleMoves(color, position,boardPos=ChessBoardPosition) {
     let allyPiece;
     let enemyPiece;
     if (color === "W") {
@@ -176,40 +172,38 @@ function kingPossibleMoves(color, position, boardPos) {
         )
             continue;
 
-        if ((directions[i] == 1 || directions[i] == -1) && potentialRow != r)
+        if ((directions[i] === 1 || directions[i] === -1) && potentialRow !== r)
             continue;
 
-        if (allyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
+        if (allyPiece.includes(boardPos[potentialIndex])) continue;
         positionIndexList.push(potentialIndex);
-        if (enemyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
+        if (enemyPiece.includes(boardPos[potentialIndex])) continue;
     }
     if (color === "W") {
-        console.log(positionIndexList);
         if (moveLog.every(item => !item.includes('K'))) {
-            if (moveLog.every(item => !item.includes('56R') && ChessBoardPosition[57] === "0" && ChessBoardPosition[58] === "0" && ChessBoardPosition[59] === "0")) {
+            if (moveLog.every(item => !item.includes('56R') )&& boardPos[57] === "0" && boardPos[58] === "0" && boardPos[59] === "0") {
+                console.log("deefefe")
                 positionIndexList.push(58);
             }
-            if (moveLog.every(item => !item.includes('63R') && ChessBoardPosition[61] === "0" && ChessBoardPosition[62] === "0" )) {
+            if (moveLog.every(item => !item.includes('63R')) && boardPos[61] === "0" && boardPos[62] === "0" ) {
                 positionIndexList.push(62);
             }
         }
     }
     if (color === "B") {
-        console.log(positionIndexList);
         if (moveLog.every(item => !item.includes('k'))) {
-            if (moveLog.every(item => !item.includes('00r') && ChessBoardPosition[1] === "0" && ChessBoardPosition[2] === "0" && ChessBoardPosition[3] === "0")) {
+            if (moveLog.every(item => !item.includes('00r')) && boardPos[1] === "0" && boardPos[2] === "0" && boardPos[3] === "0") {
                 positionIndexList.push(2);
             }
-            if (moveLog.every(item => !item.includes('07r') && ChessBoardPosition[5] === "0" && ChessBoardPosition[6] === "0" )) {
+            if (moveLog.every(item => !item.includes('07r')) && boardPos[5] === "0" && boardPos[6] === "0" ) {
                 positionIndexList.push(6);
             }
         }
     }
-    console.log(positionIndexList);
     return positionIndexList;
 }
 
-function queenPossibleMoves(color, position, boardPos) {
+function queenPossibleMoves(color, position,boardPos=ChessBoardPosition) {
     let allyPiece;
     let enemyPiece;
     if (color === "W") {
@@ -249,22 +243,21 @@ function queenPossibleMoves(color, position, boardPos) {
                 break;
 
             if (
-                (directions[i] == 1 || directions[i] == -1) &&
-                potentialRow != r
+                (directions[i] === 1 || directions[i] === -1) &&
+                potentialRow !== r
             )
                 break;
 
-            if (allyPiece.includes(ChessBoardPosition[potentialIndex])) break;
+            if (allyPiece.includes(boardPos[potentialIndex])) break;
             positionIndexList.push(potentialIndex);
-            if (enemyPiece.includes(ChessBoardPosition[potentialIndex])) break;
+            if (enemyPiece.includes(boardPos[potentialIndex])) break;
             j++;
         }
     }
-    //console.log(positionIndexList);
     return positionIndexList;
 }
 
-function pawnPossibleMoves(color, position, boardPos) {
+function pawnPossibleMoves(color, position, boardPos = ChessBoardPosition,SquareUnderAttack=false) {
     let allyPiece;
     let enemyPiece;
     let directionmult = 1
@@ -277,6 +270,7 @@ function pawnPossibleMoves(color, position, boardPos) {
         allyPiece = "rbnkqp";
     }
     let positionIndexList = [];
+    let squareUnderAttackList = []
 
     const directions = [8,16,7,9];
     let r = Math.floor(position / 8);
@@ -296,15 +290,15 @@ function pawnPossibleMoves(color, position, boardPos) {
             continue;
 
         if (directions[i]*directionmult === 8 * directionmult){
-            if (allyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
-            if (enemyPiece.includes(ChessBoardPosition[potentialIndex])) continue;}
+            if (allyPiece.includes(boardPos[potentialIndex])) continue;
+            if (enemyPiece.includes(boardPos[potentialIndex])) continue;}
         else if (directions[i] *directionmult === 16 * directionmult){
             if (r !== 6 && directionmult === -1) continue;
             if (r !== 1 && directionmult === 1) continue;
-            if (allyPiece.includes(ChessBoardPosition[potentialIndex]) ||
-                allyPiece.includes(ChessBoardPosition[potentialIndex-(8 * directionmult)])) continue;
-            if (enemyPiece.includes(ChessBoardPosition[potentialIndex])||
-                enemyPiece.includes(ChessBoardPosition[potentialIndex-(8 *directionmult)])) continue;
+            if (allyPiece.includes(boardPos[potentialIndex]) ||
+                allyPiece.includes(boardPos[potentialIndex-(8 * directionmult)])) continue;
+            if (enemyPiece.includes(boardPos[potentialIndex])||
+                enemyPiece.includes(boardPos[potentialIndex-(8 *directionmult)])) continue;
         }
         if (directions[i] * directionmult === 7 * directionmult || directions[i]*directionmult === 9 * directionmult) {
             if (moveLog.length !== 0){
@@ -313,11 +307,19 @@ function pawnPossibleMoves(color, position, boardPos) {
                     potentialIndex === parseInt(previousMove.substring(3))+(8 * directionmult)){
                     positionIndexList.push(potentialIndex);}
                 }
-            if (!enemyPiece.includes(ChessBoardPosition[potentialIndex])) continue;
+            if (!enemyPiece.includes(boardPos[potentialIndex])) continue;
+        }
+        if (directions[i]=== 7 || directions[i]===9){
+            squareUnderAttackList.push(potentialIndex);
         }
         positionIndexList.push(potentialIndex);
     }
-    return positionIndexList;
+    if (!SquareUnderAttack){
+        return positionIndexList;
+    }
+    else{
+        return squareUnderAttackList
+    }
 }
 
 function pawnPromotion(color, position, boardPos) {}
