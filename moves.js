@@ -181,21 +181,25 @@ function kingPossibleMoves(color, position,boardPos=ChessBoardPosition) {
     }
     if (color === "W") {
         if (moveLog.every(item => !item.includes('K'))) {
-            if (moveLog.every(item => !item.includes('56R') )&& boardPos[57] === "0" && boardPos[58] === "0" && boardPos[59] === "0") {
-                console.log("deefefe")
+            if (moveLog.every(item => !item.includes('56R') )&& boardPos[57] === "0" && boardPos[58] === "0" && boardPos[59] === "0" && boardPos[56] === "R" && !check) {
+                //console.log("deefefe")
                 positionIndexList.push(58);
             }
-            if (moveLog.every(item => !item.includes('63R')) && boardPos[61] === "0" && boardPos[62] === "0" ) {
+            //console.log(boardPos[63]);
+            if (moveLog.every(item => !item.includes('63R')) && boardPos[61] === "0" && boardPos[62] === "0" && boardPos[63] === "R" && !check) {
+                //console.log(check)
+                //console.log(squareAttack);
+                //console.log("dedefefef")
                 positionIndexList.push(62);
             }
         }
     }
     if (color === "B") {
         if (moveLog.every(item => !item.includes('k'))) {
-            if (moveLog.every(item => !item.includes('00r')) && boardPos[1] === "0" && boardPos[2] === "0" && boardPos[3] === "0") {
+            if (moveLog.every(item => !item.includes('00r')) && boardPos[1] === "0" && boardPos[2] === "0" && boardPos[3] === "0" && boardPos[0] === "r" && !check) {
                 positionIndexList.push(2);
             }
-            if (moveLog.every(item => !item.includes('07r')) && boardPos[5] === "0" && boardPos[6] === "0" ) {
+            if (moveLog.every(item => !item.includes('07r')) && boardPos[5] === "0" && boardPos[6] === "0" && boardPos[7] === "r" && !check) {
                 positionIndexList.push(6);
             }
         }

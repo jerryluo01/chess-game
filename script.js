@@ -10,6 +10,7 @@ let AllyPiece = "RNBKQP";
 let EnemyPiece = "rnbkqp";
 let selected = false
 let moveLog = []
+let squareAttack = []
 
 function createSquare() {
     const cont = document.querySelector(".main-cont");
@@ -205,11 +206,12 @@ function SquaresUnderAttack(chessBoardPosition){
         }
     }
     //console.log(SquaresUnderAttackList);
-    return [...SquaresUnderAttackList]
+    squareAttack = [...SquaresUnderAttackList]
+    return squareAttack
 }
 
 function CheckmateAndStalemate(chessBoardPosPosition){
-    let check = false
+    check = false
     if (SquaresUnderAttack(chessBoardPosPosition).includes(chessBoardPosPosition.indexOf("K"))||SquaresUnderAttack(chessBoardPosPosition).includes(chessBoardPosPosition.indexOf("k"))){
         check = true
     }
