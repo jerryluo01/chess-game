@@ -6,6 +6,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const vh = window.innerHeight / 100;
 //const squareSizePx = 11 * vh;
+let promotion = false;
 let AllyPiece = "RNBKQP";
 let EnemyPiece = "rnbkqp";
 let selected = false;
@@ -73,9 +74,10 @@ let selectedPiece = null;
 function handleClick(e) {
     const divId = e.target.id;
     if (
-        !selected &&
+        //!selected &&
         AllyPiece.includes(ChessBoardPosition[divId]) &&
-        !possMoves.includes(parseInt(divId))
+        !possMoves.includes(parseInt(divId)) &&
+        promotion === false
     ) {
         //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
         const arr = legalMoves(
@@ -103,7 +105,7 @@ function handleClick(e) {
         highlighted = [divId, ...arr];
         possMoves = [...arr];
         selectedPiece = parseInt(divId);
-    } else {
+    } else if (promotion === false) {
         if (possMoves.includes(parseInt(divId))) {
             RecentMove =
                 selectedPiece.toString().padStart(2, "0") +
@@ -112,6 +114,21 @@ function handleClick(e) {
             ChessBoardPosition = performMoves(RecentMove, ChessBoardPosition);
             positionUpdate(ChessBoardPosition);
             moveLog.push(RecentMove);
+            if (ChessBoardPosition.substring(0, 8).includes("P")) {
+                promotion = true;
+                console.log(EnemyPiece);
+                console.log(AllyPiece);
+                pawnPromotion(
+                    ChessBoardPosition.substring(0, 8).indexOf("P"),
+                    EnemyPiece
+                );
+            } else if (ChessBoardPosition.substring(56, 64).includes("p")) {
+                promotion = true;
+                pawnPromotion(
+                    ChessBoardPosition.substring(56, 64).indexOf("p"),
+                    EnemyPiece
+                );
+            }
         }
         highlighted.forEach((square) => {
             const id = document.getElementById(square);
@@ -290,9 +307,11 @@ function CheckmateAndStalemate(chessBoardPosPosition) {
 
 function positionUpdate(ChessBoardPosition) {
     for (let i = 0; i < ChessBoardPosition.length; i++) {
-        let r = Math.floor(i / 8);
-        let c = i % 8;
         let src = "";
+        const div = document.getElementById(i);
+
+        const oldImg = div.querySelector("img");
+        if (oldImg) oldImg.remove();
 
         switch (ChessBoardPosition[i]) {
             case "r":
@@ -333,15 +352,13 @@ function positionUpdate(ChessBoardPosition) {
                 break;
         }
 
-        if (src === "") {
-            ctx.clearRect(c * 37.5, r * 18.9, 37.5, 18.9);
-        } else {
-            const img = new Image();
+        if (src !== "") {
+            const img = document.createElement("img");
             img.src = src;
-            img.onload = function () {
-                ctx.clearRect(c * 37.5, r * 18.9, 37.5, 18.9);
-                ctx.drawImage(img, c * 37.5, r * 18.9, 37.5, 18.9);
-            };
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.pointerEvents = "none";
+            div.appendChild(img);
         }
     }
 }

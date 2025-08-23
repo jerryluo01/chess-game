@@ -375,4 +375,66 @@ function pawnPossibleMoves(
     }
 }
 
-function pawnPromotion(color, position, boardPos) {}
+function pawnPromotion(column, AllyPiece) {
+    const cont = document.querySelector(".main-cont");
+    for (let i = 0; i < 4; i++) {
+        let src;
+        const div = document.createElement("div");
+        cont.appendChild(div);
+        div.classList.add("square", "promotion");
+        div.style.position = "absolute";
+        if (AllyPiece === "RNBKQP") {
+            div.style.top = `${i * 11}vh`;
+            switch (i) {
+                case 0:
+                    src = "piece/Chess_qlt60.png";
+                    break;
+                case 1:
+                    src = "piece/Chess_rlt60.png";
+                    break;
+                case 2:
+                    src = "piece/Chess_nlt60.png";
+                    break;
+                case 3:
+                    src = "piece/Chess_blt60.png";
+                    break;
+            }
+        } else {
+            div.style.top = `${(7 - i) * 11}vh`;
+            switch (i) {
+                case 0:
+                    src = "piece/Chess_qdt60.png";
+                    break;
+                case 1:
+                    src = "piece/Chess_rdt60.png";
+                    break;
+                case 2:
+                    src = "piece/Chess_ndt60.png";
+                    break;
+                case 3:
+                    src = "piece/Chess_bdt60.png";
+                    break;
+            }
+        }
+
+        div.style.left = `${column * 11}vh`;
+        const img = document.createElement("img");
+        img.src = src;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        div.appendChild(img);
+    }
+}
+// } else {
+//     for (let i = 0; i < 4; i++) {
+//         const div = document.createElement("div");
+//         cont.appendChild(div);
+//         div.classList.add("square", "promotion");
+//         div.style.position = "absolute";
+//         div.style.top = `${7 - i * 11}vh`;
+//         div.style.left = `${row * 11}vh`;
+//     }
+// }
+
+//pawnPromotion(2, "RBNKQP");
+//pawnPromotion(6, "rbnkqp");
