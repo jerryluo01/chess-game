@@ -1,16 +1,16 @@
 // let ChessBoardPosition = `N0p0P1QbKR00n0kqPpp0000BqN0rbRp000n0B0P000RP0K000rNBQ0p`;
 let ChessBoardPosition =
-     "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
-    //"rnbqkbnr000000000000000000000r00000000000000000000000000RNBQKBNR";
+    "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
+//"rnbqkbnr000000000000000000000r00000000000000000000000000RNBQKBNR";
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const vh = window.innerHeight / 100;
 //const squareSizePx = 11 * vh;
 let AllyPiece = "RNBKQP";
 let EnemyPiece = "rnbkqp";
-let selected = false
-let moveLog = []
-let squareAttack = []
+let selected = false;
+let moveLog = [];
+let squareAttack = [];
 
 function createSquare() {
     const cont = document.querySelector(".main-cont");
@@ -31,26 +31,40 @@ const castleMoves = {
     "04k02": (pos) => "0" + pos.substring(1, 3) + "r" + pos.substring(4),
     "04k06": (pos) => pos.substring(0, 5) + "rk0" + pos.substring(8),
     "60K58": (pos) => pos.substring(0, 56) + "00KR" + pos.substring(60),
-    "60K62": (pos) => pos.substring(0, 61) + "RK0"
+    "60K62": (pos) => pos.substring(0, 61) + "RK0",
 };
 
-function legalMoves(possibleMoves,ChessBoardPosition,piece,position) {
+function legalMoves(possibleMoves, ChessBoardPosition, piece, position) {
     let tempChessBoardPosition;
-    let possibleMovesTemp
-    let possibleMovesListTemp = possibleMoves
+    let possibleMovesTemp;
+    let possibleMovesListTemp = possibleMoves;
     //console.log(possibleMoves);
     for (let i = 0; i < possibleMoves.length; i++) {
         tempChessBoardPosition = ChessBoardPosition;
-        possibleMovesTemp = position.toString().padStart(2, "0")+piece+possibleMoves[i].toString().padStart(2, "0");
-        tempChessBoardPosition = performMoves(possibleMovesTemp,tempChessBoardPosition,false);
-        if (SquaresUnderAttack(tempChessBoardPosition).includes(tempChessBoardPosition.indexOf("K")) || SquaresUnderAttack(tempChessBoardPosition).includes(tempChessBoardPosition.indexOf("k")) ) {
-            possibleMovesListTemp = possibleMovesListTemp.filter(move => move !== possibleMoves[i]);
+        possibleMovesTemp =
+            position.toString().padStart(2, "0") +
+            piece +
+            possibleMoves[i].toString().padStart(2, "0");
+        tempChessBoardPosition = performMoves(
+            possibleMovesTemp,
+            tempChessBoardPosition,
+            false
+        );
+        if (
+            SquaresUnderAttack(tempChessBoardPosition).includes(
+                tempChessBoardPosition.indexOf("K")
+            ) ||
+            SquaresUnderAttack(tempChessBoardPosition).includes(
+                tempChessBoardPosition.indexOf("k")
+            )
+        ) {
+            possibleMovesListTemp = possibleMovesListTemp.filter(
+                (move) => move !== possibleMoves[i]
+            );
         }
     }
     return possibleMovesListTemp;
 }
-
-
 
 let highlighted = [];
 let possMoves = [];
@@ -58,147 +72,169 @@ let selectedPiece = null;
 
 function handleClick(e) {
     const divId = e.target.id;
-    if (!selected && AllyPiece.includes(ChessBoardPosition[divId]) && !possMoves.includes(parseInt(divId))) {
+    if (
+        !selected &&
+        AllyPiece.includes(ChessBoardPosition[divId]) &&
+        !possMoves.includes(parseInt(divId))
+    ) {
         //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
-        const arr = legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId))
+        const arr = legalMoves(
+            possibleMoves(ChessBoardPosition[divId], parseInt(divId)),
+            ChessBoardPosition,
+            ChessBoardPosition[divId],
+            parseInt(divId)
+        );
         //console.log(legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId)));
 
         highlighted.forEach((prev) => {
             const id = document.getElementById(prev);
             id.style.border = "";
+            id.style.outline = "";
         });
 
-        e.target.style.border = "3px blue solid";
+        e.target.style.border = "3px blue double";
 
         arr.forEach((square) => {
             const id = document.getElementById(square);
-            id.style.border = "3px blue solid";
+            id.style.border = "3px lightblue double";
             selected = true;
         });
 
         highlighted = [divId, ...arr];
-        possMoves = [...arr]
-        selectedPiece = parseInt(divId)
-    }
-
-    else{
-        if (possMoves.includes(parseInt(divId))){
-
-            RecentMove = selectedPiece.toString().padStart(2, '0')+ChessBoardPosition[selectedPiece]+divId.padStart(2, '0')
-            ChessBoardPosition = performMoves(RecentMove,ChessBoardPosition);
-            positionUpdate(ChessBoardPosition)
+        possMoves = [...arr];
+        selectedPiece = parseInt(divId);
+    } else {
+        if (possMoves.includes(parseInt(divId))) {
+            RecentMove =
+                selectedPiece.toString().padStart(2, "0") +
+                ChessBoardPosition[selectedPiece] +
+                divId.padStart(2, "0");
+            ChessBoardPosition = performMoves(RecentMove, ChessBoardPosition);
+            positionUpdate(ChessBoardPosition);
             moveLog.push(RecentMove);
         }
         highlighted.forEach((square) => {
             const id = document.getElementById(square);
-            id.style.border = "none";
+            id.style.border = "";
+            id.style.outline = "";
             selected = false;
         });
     }
 }
-function performMoves(moves,chessBoardPosition, realBoard = true) {
-    iniPos = parseInt(moves.substring(0,2))
-    ChessPiece = chessBoardPosition[iniPos]
-    afterPos = parseInt(moves.substring(3,5))
+function performMoves(moves, chessBoardPosition, realBoard = true) {
+    iniPos = parseInt(moves.substring(0, 2));
+    ChessPiece = chessBoardPosition[iniPos];
+    afterPos = parseInt(moves.substring(3, 5));
 
-    PieceEaten = chessBoardPosition[parseInt(moves.substring(3,5))]
+    PieceEaten = chessBoardPosition[parseInt(moves.substring(3, 5))];
 
     //let BoardBeforeMove = chessBoardPosition
 
-    chessBoardPosition = chessBoardPosition.substring(0, afterPos) + ChessPiece + chessBoardPosition.substring(afterPos + 1);
-    chessBoardPosition = chessBoardPosition.substring(0, iniPos) + "0" + chessBoardPosition.substring(iniPos + 1);
-
+    chessBoardPosition =
+        chessBoardPosition.substring(0, afterPos) +
+        ChessPiece +
+        chessBoardPosition.substring(afterPos + 1);
+    chessBoardPosition =
+        chessBoardPosition.substring(0, iniPos) +
+        "0" +
+        chessBoardPosition.substring(iniPos + 1);
 
     if (castleMoves[moves]) {
         chessBoardPosition = castleMoves[moves](chessBoardPosition);
     }
-    if ((Math.abs(parseInt(afterPos)-parseInt(iniPos)) === 7 || Math.abs(parseInt(afterPos)-parseInt(iniPos)) === 9) &&
-        (ChessPiece === "p" || ChessPiece === "P") && (PieceEaten === "0")){
-        if (ChessPiece === "p"){
-            chessBoardPosition = chessBoardPosition.substring(0, parseInt(afterPos)-8) + "0" + chessBoardPosition.substring(parseInt(afterPos)-8 + 1);
-        }
-        else{
-            chessBoardPosition = chessBoardPosition.substring(0, parseInt(afterPos)+8) + "0" + chessBoardPosition.substring(parseInt(afterPos)+8 + 1);
+    if (
+        (Math.abs(parseInt(afterPos) - parseInt(iniPos)) === 7 ||
+            Math.abs(parseInt(afterPos) - parseInt(iniPos)) === 9) &&
+        (ChessPiece === "p" || ChessPiece === "P") &&
+        PieceEaten === "0"
+    ) {
+        if (ChessPiece === "p") {
+            chessBoardPosition =
+                chessBoardPosition.substring(0, parseInt(afterPos) - 8) +
+                "0" +
+                chessBoardPosition.substring(parseInt(afterPos) - 8 + 1);
+        } else {
+            chessBoardPosition =
+                chessBoardPosition.substring(0, parseInt(afterPos) + 8) +
+                "0" +
+                chessBoardPosition.substring(parseInt(afterPos) + 8 + 1);
         }
     }
     //positionUpdate(chessBoardPosition)
-    possMoves = []
+    possMoves = [];
 
     if (realBoard === true) {
-        if (AllyPiece === "RNBKQP") {
-            AllyPiece = "rnbkqp";
-            EnemyPiece = "RNBKQP"
-        } else {
-            AllyPiece = "RNBKQP";
-            EnemyPiece = "rnbkqp"
-        }
+        const isUpperCase = AllyPiece === "RNBKQP";
+        AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
+        EnemyPiece = isUpperCase ? "RNBKQP" : "rnbkqp";
     }
-    if(realBoard) {
-        let state = CheckmateAndStalemate(chessBoardPosition)
+    if (realBoard) {
+        let state = CheckmateAndStalemate(chessBoardPosition);
         if (state === 1) {
-            console.log("CHECKMATE")
-            chessBoardPosition = reset()
-        }
-        else if (state === 2) {
-            console.log("STALEMATE")
-            chessBoardPosition = reset()
+            alert("CHECKMATE");
+            chessBoardPosition = reset();
+        } else if (state === 2) {
+            alert("STALEMATE");
+            chessBoardPosition = reset();
         }
     }
     return chessBoardPosition;
 }
-function reset(){
+function reset() {
     //console.log("RESET")
     AllyPiece = "RNBKQP";
     EnemyPiece = "rnbkqp";
-    selected = false
-    moveLog = []
+    selected = false;
+    moveLog = [];
     return "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
 }
-function possibleMoves(piece, position,chessBoard = ChessBoardPosition) {
+function possibleMoves(piece, position, chessBoard = ChessBoardPosition) {
     switch (piece) {
         case "r":
-            return rookPossibleMoves("B", position,chessBoard);
+            return rookPossibleMoves("B", position, chessBoard);
         case "n":
-            return knightPossibleMoves("B", position,chessBoard);
+            return knightPossibleMoves("B", position, chessBoard);
         case "b":
-            return bishopPossibleMoves("B", position,chessBoard);
+            return bishopPossibleMoves("B", position, chessBoard);
         case "q":
-            return queenPossibleMoves("B", position,chessBoard);
+            return queenPossibleMoves("B", position, chessBoard);
         case "k":
-            return kingPossibleMoves("B", position,chessBoard);
+            return kingPossibleMoves("B", position, chessBoard);
         case "p":
-            return pawnPossibleMoves("B", position,chessBoard);
+            return pawnPossibleMoves("B", position, chessBoard);
         case "R":
-            return rookPossibleMoves("W", position,chessBoard);
+            return rookPossibleMoves("W", position, chessBoard);
         case "N":
-            return knightPossibleMoves("W", position,chessBoard);
+            return knightPossibleMoves("W", position, chessBoard);
         case "B":
-            return bishopPossibleMoves("W", position,chessBoard);
+            return bishopPossibleMoves("W", position, chessBoard);
         case "Q":
-            return queenPossibleMoves("W", position,chessBoard);
+            return queenPossibleMoves("W", position, chessBoard);
         case "K":
-            return kingPossibleMoves("W", position,chessBoard);
+            return kingPossibleMoves("W", position, chessBoard);
         case "P":
-            return pawnPossibleMoves("W", position,chessBoard);
+            return pawnPossibleMoves("W", position, chessBoard);
         default:
             return [];
     }
 }
 
-function SquaresUnderAttack(chessBoardPosition){
+function SquaresUnderAttack(chessBoardPosition) {
     //console.log(chessBoardPosition)
     let SquaresUnderAttackList = new Set();
-    let Moves
+    let Moves;
     for (let i = 0; i < chessBoardPosition.length; i++) {
-        if (EnemyPiece.includes(chessBoardPosition[i])){
-            if (chessBoardPosition[i] === "P"){
-                Moves = pawnPossibleMoves("W", i,chessBoardPosition,true)
-            }
-            else if (chessBoardPosition[i] === "p"){
-                Moves = pawnPossibleMoves("B", i,chessBoardPosition,true)
-            }
-            else{
-                Moves = possibleMoves(chessBoardPosition[i],i,chessBoardPosition);
+        if (EnemyPiece.includes(chessBoardPosition[i])) {
+            if (chessBoardPosition[i] === "P") {
+                Moves = pawnPossibleMoves("W", i, chessBoardPosition, true);
+            } else if (chessBoardPosition[i] === "p") {
+                Moves = pawnPossibleMoves("B", i, chessBoardPosition, true);
+            } else {
+                Moves = possibleMoves(
+                    chessBoardPosition[i],
+                    i,
+                    chessBoardPosition
+                );
             }
             for (let move of Moves) {
                 SquaresUnderAttackList.add(move); // only unique values kept
@@ -206,35 +242,51 @@ function SquaresUnderAttack(chessBoardPosition){
         }
     }
     //console.log(SquaresUnderAttackList);
-    squareAttack = [...SquaresUnderAttackList]
-    return squareAttack
+    squareAttack = [...SquaresUnderAttackList];
+    return squareAttack;
 }
 
-function CheckmateAndStalemate(chessBoardPosPosition){
-    check = false
-    if (SquaresUnderAttack(chessBoardPosPosition).includes(chessBoardPosPosition.indexOf("K"))||SquaresUnderAttack(chessBoardPosPosition).includes(chessBoardPosPosition.indexOf("k"))){
-        check = true
+function CheckmateAndStalemate(chessBoardPosPosition) {
+    check = false;
+    if (
+        SquaresUnderAttack(chessBoardPosPosition).includes(
+            chessBoardPosPosition.indexOf("K")
+        ) ||
+        SquaresUnderAttack(chessBoardPosPosition).includes(
+            chessBoardPosPosition.indexOf("k")
+        )
+    ) {
+        check = true;
     }
     let potentialMovesList = new Set();
-    let Moves
+    let Moves;
     for (let i = 0; i < chessBoardPosPosition.length; i++) {
-        if (AllyPiece.includes(chessBoardPosPosition[i])){
-            Moves = legalMoves(possibleMoves(chessBoardPosPosition[i],i,chessBoardPosPosition),chessBoardPosPosition,chessBoardPosPosition[i],i);
+        if (AllyPiece.includes(chessBoardPosPosition[i])) {
+            Moves = legalMoves(
+                possibleMoves(
+                    chessBoardPosPosition[i],
+                    i,
+                    chessBoardPosPosition
+                ),
+                chessBoardPosPosition,
+                chessBoardPosPosition[i],
+                i
+            );
             for (let move of Moves) {
                 //  const arr = legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId))
                 potentialMovesList.add(move); // only unique values kept
             }
         }
     }
-    potentialMovesList = [...potentialMovesList]
-    if (check && potentialMovesList.length === 0){
-        return 1}
-    else if (!check && potentialMovesList.length === 0){
-        return 2}
-    else{
-        return 0}
+    potentialMovesList = [...potentialMovesList];
+    if (check && potentialMovesList.length === 0) {
+        return 1;
+    } else if (!check && potentialMovesList.length === 0) {
+        return 2;
+    } else {
+        return 0;
+    }
 }
-
 
 function positionUpdate(ChessBoardPosition) {
     for (let i = 0; i < ChessBoardPosition.length; i++) {
@@ -243,18 +295,42 @@ function positionUpdate(ChessBoardPosition) {
         let src = "";
 
         switch (ChessBoardPosition[i]) {
-            case "r": src = "piece/Chess_rdt60.png"; break;
-            case "n": src = "piece/Chess_ndt60.png"; break;
-            case "b": src = "piece/Chess_bdt60.png"; break;
-            case "q": src = "piece/Chess_qdt60.png"; break;
-            case "k": src = "piece/Chess_kdt60.png"; break;
-            case "p": src = "piece/Chess_pdt60.png"; break;
-            case "R": src = "piece/Chess_rlt60.png"; break;
-            case "N": src = "piece/Chess_nlt60.png"; break;
-            case "B": src = "piece/Chess_blt60.png"; break;
-            case "Q": src = "piece/Chess_qlt60.png"; break;
-            case "K": src = "piece/Chess_klt60.png"; break;
-            case "P": src = "piece/Chess_plt60.png"; break;
+            case "r":
+                src = "piece/Chess_rdt60.png";
+                break;
+            case "n":
+                src = "piece/Chess_ndt60.png";
+                break;
+            case "b":
+                src = "piece/Chess_bdt60.png";
+                break;
+            case "q":
+                src = "piece/Chess_qdt60.png";
+                break;
+            case "k":
+                src = "piece/Chess_kdt60.png";
+                break;
+            case "p":
+                src = "piece/Chess_pdt60.png";
+                break;
+            case "R":
+                src = "piece/Chess_rlt60.png";
+                break;
+            case "N":
+                src = "piece/Chess_nlt60.png";
+                break;
+            case "B":
+                src = "piece/Chess_blt60.png";
+                break;
+            case "Q":
+                src = "piece/Chess_qlt60.png";
+                break;
+            case "K":
+                src = "piece/Chess_klt60.png";
+                break;
+            case "P":
+                src = "piece/Chess_plt60.png";
+                break;
         }
 
         if (src === "") {
