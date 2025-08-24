@@ -113,6 +113,8 @@ function handleClick(e) {
                 divId.padStart(2, "0");
             ChessBoardPosition = performMoves(RecentMove, ChessBoardPosition);
             positionUpdate(ChessBoardPosition);
+            console.log(ChessBoardPosition); //=====================================
+            console.log(moveLog);
             moveLog.push(RecentMove);
             if (ChessBoardPosition.substring(0, 8).includes("P")) {
                 promotion = true;
