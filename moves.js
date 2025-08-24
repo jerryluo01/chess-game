@@ -382,21 +382,26 @@ function pawnPromotion(column, AllyPiece) {
         const div = document.createElement("div");
         cont.appendChild(div);
         div.classList.add("square", "promotion");
+        div.dataset.c = column;
         div.style.position = "absolute";
         if (AllyPiece === "RNBKQP") {
             div.style.top = `${i * 11}vh`;
             switch (i) {
                 case 0:
                     src = "piece/Chess_qlt60.png";
+                    div.id = "ql";
                     break;
                 case 1:
                     src = "piece/Chess_rlt60.png";
+                    div.id = "rl";
                     break;
                 case 2:
                     src = "piece/Chess_nlt60.png";
+                    div.id = "nl";
                     break;
                 case 3:
                     src = "piece/Chess_blt60.png";
+                    div.id = "bl";
                     break;
             }
         } else {
@@ -404,19 +409,24 @@ function pawnPromotion(column, AllyPiece) {
             switch (i) {
                 case 0:
                     src = "piece/Chess_qdt60.png";
+                    div.id = "qd";
                     break;
                 case 1:
                     src = "piece/Chess_rdt60.png";
+                    div.id = "rd";
                     break;
                 case 2:
                     src = "piece/Chess_ndt60.png";
+                    div.id = "nd";
                     break;
                 case 3:
                     src = "piece/Chess_bdt60.png";
+                    div.id = "bd";
                     break;
             }
         }
 
+        div.addEventListener("click", promoted);
         div.style.left = `${column * 11}vh`;
         const img = document.createElement("img");
         img.src = src;
@@ -424,6 +434,82 @@ function pawnPromotion(column, AllyPiece) {
         img.style.height = "100%";
         div.appendChild(img);
     }
+}
+
+function promoted(e) {
+    console.log("frfrhrfhjrfj");
+    const id = e.currentTarget.id;
+    const c = e.currentTarget.dataset.c;
+    console.log(ChessBoardPosition);
+    console.log(ChessBoardPosition.substring(0, c));
+    console.log(ChessBoardPosition.substring(parseInt(c) + 1));
+    //console.log(column);
+    switch (id) {
+        case "ql":
+            //console.log("bbbbb");
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, c) +
+                "Q" +
+                ChessBoardPosition.substring(parseInt(c) + 1);
+            break;
+        case "rl":
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, c) +
+                "R" +
+                ChessBoardPosition.substring(parseInt(c) + 1);
+            break;
+        case "nl":
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, c) +
+                "N" +
+                ChessBoardPosition.substring(parseInt(c) + 1);
+            break;
+        case "bl":
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, c) +
+                "B" +
+                ChessBoardPosition.substring(parseInt(c) + 1);
+            break;
+        case "qd":
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, 56 + parseInt(c)) +
+                "q" +
+                ChessBoardPosition.substring(parseInt(c) + 57);
+            break;
+        case "rd":
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, 56 + parseInt(c)) +
+                "r" +
+                ChessBoardPosition.substring(parseInt(c) + 57);
+            break;
+        case "nd":
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, 56 + parseInt(c)) +
+                "n" +
+                ChessBoardPosition.substring(parseInt(c) + 57);
+            break;
+        case "bd":
+            ChessBoardPosition =
+                ChessBoardPosition.substring(0, 56 + parseInt(c)) +
+                "b" +
+                ChessBoardPosition.substring(parseInt(c) + 57);
+            break;
+    }
+    console.log(ChessBoardPosition);
+    positionUpdate(ChessBoardPosition);
+    promotion = false;
+    if (id.includes("l")) {
+        document.getElementById("ql").remove();
+        document.getElementById("bl").remove();
+        document.getElementById("nl").remove();
+        document.getElementById("rl").remove();
+    } else {
+        document.getElementById("qd").remove();
+        document.getElementById("bd").remove();
+        document.getElementById("nd").remove();
+        document.getElementById("rd").remove();
+    }
+    //console.log(id);
 }
 // } else {
 //     for (let i = 0; i < 4; i++) {
