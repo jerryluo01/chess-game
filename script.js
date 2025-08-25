@@ -113,9 +113,12 @@ function handleClick(e) {
                 divId.padStart(2, "0");
             ChessBoardPosition = performMoves(RecentMove, ChessBoardPosition);
             positionUpdate(ChessBoardPosition);
-            console.log(ChessBoardPosition); //=====================================
-            console.log(moveLog);
+            //console.log(moveLog);
             moveLog.push(RecentMove);
+            console.log(moveLog);
+            getAIMove(moveLog, ChessBoardPosition).then(aiMove => {
+                console.log("AI move:", aiMove);
+            });
             if (ChessBoardPosition.substring(0, 8).includes("P")) {
                 promotion = true;
                 console.log(EnemyPiece);
@@ -362,6 +365,20 @@ function positionUpdate(ChessBoardPosition) {
             img.style.pointerEvents = "none";
             div.appendChild(img);
         }
+    }
+}
+async function getAIMove(movesLog, board) {
+    try {
+        const response = await fetch("http://127.0.0.1:5000/move", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ move_log: movesLog, board_input: board }) // send move log
+        });
+
+        const data = await response.json();
+        return data.move;
+    } catch (error) {
+        console.error("Error fetching AI move:", error);
     }
 }
 
