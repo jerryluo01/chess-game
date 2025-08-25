@@ -116,13 +116,11 @@ function handleClick(e) {
             //console.log(moveLog);
             moveLog.push(RecentMove);
             console.log(moveLog);
-            getAIMove(moveLog, ChessBoardPosition).then(aiMove => {
-                console.log("AI move:", aiMove);
-            });
             if (ChessBoardPosition.substring(0, 8).includes("P")) {
                 promotion = true;
-                console.log(EnemyPiece);
-                console.log(AllyPiece);
+                //console.log("efefefe")
+                //console.log(EnemyPiece);
+                //console.log(AllyPiece);
                 pawnPromotion(
                     ChessBoardPosition.substring(0, 8).indexOf("P"),
                     EnemyPiece
@@ -133,6 +131,12 @@ function handleClick(e) {
                     ChessBoardPosition.substring(56, 64).indexOf("p"),
                     EnemyPiece
                 );
+            }
+            else{
+                console.log(promotion)
+                getAIMove(moveLog, ChessBoardPosition).then(aiMove => {
+                console.log("AI move:", aiMove);
+            });
             }
         }
         highlighted.forEach((square) => {

@@ -440,9 +440,9 @@ function promoted(e) {
     console.log("frfrhrfhjrfj");
     const id = e.currentTarget.id;
     const c = e.currentTarget.dataset.c;
-    console.log(ChessBoardPosition);
-    console.log(ChessBoardPosition.substring(0, c));
-    console.log(ChessBoardPosition.substring(parseInt(c) + 1));
+    //console.log(ChessBoardPosition);
+    //console.log(ChessBoardPosition.substring(0, c));
+    //console.log(ChessBoardPosition.substring(parseInt(c) + 1));
     //console.log(column);
     switch (id) {
         case "ql":
@@ -451,53 +451,64 @@ function promoted(e) {
                 ChessBoardPosition.substring(0, c) +
                 "Q" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "q"
             break;
         case "rl":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "R" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "r"
             break;
         case "nl":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "N" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "n"
             break;
         case "bl":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "B" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "b"
             break;
         case "qd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "q" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "q"
             break;
         case "rd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "r" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "r"
             break;
         case "nd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "n" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "n"
             break;
         case "bd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "b" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
+                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "b"
             break;
     }
-    console.log(ChessBoardPosition);
+    //console.log(ChessBoardPosition);
     positionUpdate(ChessBoardPosition);
     promotion = false;
+    getAIMove(moveLog, ChessBoardPosition).then(aiMove => {
+        console.log("AI move:", aiMove);
+    });
     if (id.includes("l")) {
         document.getElementById("ql").remove();
         document.getElementById("bl").remove();
