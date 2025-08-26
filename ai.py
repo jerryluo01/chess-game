@@ -192,8 +192,19 @@ def valueBoard(board):
         totalValue += RelativePieceValues(board[i], i,endgame)
     return totalValue
 
+def moveScore(board, move):
+    piece = board.piece_at(move.to_square)
+    score = 0
 
+    if piece:
+        value = {chess.PAWN:1, chess.KNIGHT:3, chess.BISHOP:3,
+                 chess.ROOK:5, chess.QUEEN:9, chess.KING:1000}
+        score += value[piece.piece_type]  
 
+    if move.promotion:
+        score += 10 
+
+    return score
 
 
 
@@ -205,6 +216,7 @@ def minimax(positionBoard, depth, alpha, beta, color):
     moves = list(positionBoard.legal_moves)
 
     if color:
+        #moves.sort(key=lambda m: moveScore(positionBoard, m), reverse=True)
         maxEval = -math.inf
         for move in moves:
             piece = board.piece_at(move.from_square)
@@ -223,6 +235,7 @@ def minimax(positionBoard, depth, alpha, beta, color):
         return bestMove, maxEval
 
     else:
+        #moves.sort(key=lambda m: moveScore(positionBoard, m))
         minEval = math.inf
         for move in moves:
             piece = board.piece_at(move.from_square)
@@ -274,9 +287,9 @@ def translateMovelog(moveLog):
 
 
 # print(custom_string_to_fen("rnbqkb0rppppn00p000000p00000000Q000000000000P000PPP00PPPRNB0KBNR"))
-print(minimax(translateMovelog(['54P38', '06n21', '61B47', '21n06', '62N45', '06n21']), 3, -math.inf, math.inf, True)[0].uci())
+print(minimax(translateMovelog(['54P38', '06n21', '61B47', '21n06', '62N45', '06n21']), 5, -math.inf, math.inf, False)[0].uci())
 #print(valueBoard(translateBoard(chess.Board())))
-print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '28P20', '21p29', '20P11', '04k12', '11P02r', '03q19']))
+print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '52P44', '14p22', '59Q31']))
 #'31Q15'
 
 # print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '52P44', '14p22', '59Q31']))

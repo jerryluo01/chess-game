@@ -12,6 +12,12 @@ let EnemyPiece = "rnbkqp";
 let selected = false;
 let moveLog = [];
 let squareAttack = [];
+let CHESSAI = true
+let AiPiece = "RNBKQP"
+
+if (CHESSAI === true && AiPiece === "RNBKQP"){
+    AIMoveMaker()
+}
 
 function createSquare() {
     const cont = document.querySelector(".main-cont");
@@ -77,7 +83,7 @@ function handleClick(e) {
         //!selected &&
         AllyPiece.includes(ChessBoardPosition[divId]) &&
         !possMoves.includes(parseInt(divId)) &&
-        promotion === false
+        promotion === false && AllyPiece !== AiPiece
     ) {
         //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
         const arr = legalMoves(
@@ -105,7 +111,7 @@ function handleClick(e) {
         highlighted = [divId, ...arr];
         possMoves = [...arr];
         selectedPiece = parseInt(divId);
-    } else if (promotion === false) {
+    } else if (promotion === false && AllyPiece !== AiPiece) {
         if (possMoves.includes(parseInt(divId))) {
             RecentMove =
                 selectedPiece.toString().padStart(2, "0") +
@@ -133,11 +139,9 @@ function handleClick(e) {
                 );
             }
             else{
-                console.log(promotion)
-                getAIMove(moveLog, ChessBoardPosition).then(aiMove => {
-                console.log("AI move:", aiMove);
-            });
-            }
+                if (CHESSAI){
+                    AIMoveMaker()
+            }}
         }
         highlighted.forEach((square) => {
             const id = document.getElementById(square);
@@ -146,6 +150,24 @@ function handleClick(e) {
             selected = false;
         });
     }
+}
+
+function AIMoveMaker(){
+    getAIMove(moveLog, ChessBoardPosition).then(aiMove => {
+    aiMove = aiMove.replace(/(?<!\d)(\d)(?!\d)/g, '0$1')
+    console.log("AI move:", aiMove)
+    moveLog.push(aiMove);
+    ChessBoardPosition = performMoves(aiMove,ChessBoardPosition)
+    if (ChessBoardPosition.substring(0, 8).includes("P")) {
+        c = ChessBoardPosition.indexOf("P", 0)
+        ChessBoardPosition =ChessBoardPosition.substring(0, c) +"Q" +ChessBoardPosition.substring(parseInt(c) + 1);
+    }
+    if (ChessBoardPosition.substring(56, 64).includes("P")) {
+        c = ChessBoardPosition.indexOf("p", 56)
+        ChessBoardPosition = ChessBoardPosition.substring(0, 56 + parseInt(c)) + "q" +ChessBoardPosition.substring(parseInt(c) + 57);
+    }
+    positionUpdate(ChessBoardPosition)
+    });
 }
 function performMoves(moves, chessBoardPosition, realBoard = true) {
     iniPos = parseInt(moves.substring(0, 2));
@@ -307,11 +329,23 @@ function CheckmateAndStalemate(chessBoardPosPosition) {
     potentialMovesList = [...potentialMovesList];
     if (check && potentialMovesList.length === 0) {
         return 1;
-    } else if (!check && potentialMovesList.length === 0) {
+    } else if (!check && potentialMovesList.length === 0 || insufficientMaterial(chessBoardPosPosition)) {
         return 2;
     } else {
         return 0;
     }
+}
+
+function insufficientMaterial(chessBoard){
+    let pieces = chessBoard.replace(/0/g, "").split("");
+    
+    if (pieces.length === 2) return true;
+    
+    if (pieces.length === 3) {
+        return pieces.includes("B") || pieces.includes("b") ||
+               pieces.includes("N") || pieces.includes("n");
+    }
+    return false
 }
 
 function positionUpdate(ChessBoardPosition) {
