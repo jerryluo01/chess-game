@@ -98,12 +98,14 @@ function handleClick(e) {
             parseInt(divId)
         );
         //console.log(legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId)));
-
-        highlighted.forEach((prev) => {
-            const id = document.getElementById(prev);
-            id.style.border = "";
-            id.style.outline = "";
-        });
+        if (!selected) {
+            highlighted.forEach((prev) => {
+                const id = document.getElementById(prev);
+                id.style.border = "";
+                id.style.outline = "";
+            });
+        } else {
+        }
 
         e.target.style.border = "3px blue double";
 
