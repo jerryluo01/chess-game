@@ -9,14 +9,15 @@ let selected = false;
 let moveLog = [];
 let squareAttack = [];
 let CHESSAI = false;
+let AIPiece;
 
 let mode = localStorage.getItem("gameMode");
 switch (mode) {
     case "pve":
         CHESSAI = true;
+        let AIPiece = "rnbkqp";
         console.log(mode);
-        let AiPiece = "RNBKQP";
-        if (CHESSAI === true && AiPiece === "RNBKQP") {
+        if (CHESSAI === true && AIPiece === "RNBKQP") {
             AIMoveMaker();
         }
 
@@ -87,8 +88,8 @@ function handleClick(e) {
         //!selected &&
         AllyPiece.includes(ChessBoardPosition[divId]) &&
         !possMoves.includes(parseInt(divId)) &&
-        promotion === false
-        // AllyPiece !== AiPiece======================================================================
+        promotion === false &&
+        AllyPiece !== AIPiece
     ) {
         //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
         const arr = legalMoves(
@@ -98,28 +99,39 @@ function handleClick(e) {
             parseInt(divId)
         );
         //console.log(legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId)));
-        if (!selected) {
-            highlighted.forEach((prev) => {
-                const id = document.getElementById(prev);
-                id.style.border = "";
-                id.style.outline = "";
-            });
-        } else {
-        }
 
-        e.target.style.border = "3px blue double";
-
-        arr.forEach((square) => {
-            const id = document.getElementById(square);
-            id.style.border = "3px rgba(24, 197, 255, 1) double";
-            selected = true;
+        highlighted.forEach((prev) => {
+            const id = document.getElementById(prev);
+            id.style.border = "";
+            id.style.outline = "";
         });
 
-        highlighted = [divId, ...arr];
-        possMoves = [...arr];
-        selectedPiece = parseInt(divId);
-    } else if (promotion === false) {
-        // removed AllyPiece !== AiPiece from if statement===========================================
+        if (!selected) {
+            e.target.style.border = "3px blue double";
+
+            arr.forEach((square) => {
+                const id = document.getElementById(square);
+                id.style.border = "3px rgba(24, 197, 255, 1) double";
+                selected = true;
+            });
+
+            highlighted = [divId, ...arr];
+            possMoves = [...arr];
+            selectedPiece = parseInt(divId);
+        } else {
+            e.target.style.border = "";
+
+            arr.forEach((square) => {
+                const id = document.getElementById(square);
+                id.style.border = "";
+                selected = false;
+            });
+
+            highlighted = [];
+            possMoves = [];
+            selectedPiece = null;
+        }
+    } else if (promotion === false && AllyPiece !== AIPiece) {
         if (possMoves.includes(parseInt(divId))) {
             RecentMove =
                 selectedPiece.toString().padStart(2, "0") +
