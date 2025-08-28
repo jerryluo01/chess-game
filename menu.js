@@ -3,14 +3,8 @@ btn.forEach((btn) => btn.addEventListener("click", play));
 
 function play(e) {
     const type = e.target.className;
-    window.location.href = "index.html";
+    console.log(type);
 
-    switch (type) {
-        case "pvp":
-            break;
-        case "pve":
-            break;
-        case "online":
-            break;
-    }
+    localStorage.setItem("gameMode", type);
+    window.location.href = "game.html";
 }
