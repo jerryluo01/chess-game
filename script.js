@@ -12,16 +12,20 @@ let CHESSAI = false;
 let AIPiece;
 
 let mode = localStorage.getItem("gameMode");
-switch (mode) {
-    case "pve":
-        CHESSAI = true;
-        let AIPiece = "rnbkqp";
-        console.log(mode);
-        if (CHESSAI === true && AIPiece === "RNBKQP") {
-            AIMoveMaker();
-        }
-
-        break;
+if (mode === "pve") {
+    CHESSAI = true;
+    let color = localStorage.getItem("color");
+    if (color === "white") {
+        AIPiece = "rnbkqp";
+        AIMoveMaker();
+    } else {
+        AIPiece = "RNBKQP";
+        AIMoveMaker();
+    }
+    // if (CHESSAI === true && AIPiece === "RNBKQP") {
+    //     AIMoveMaker();
+    // }
+} else {
 }
 
 function createSquare() {
@@ -118,7 +122,7 @@ function handleClick(e) {
             highlighted = [divId, ...arr];
             possMoves = [...arr];
             selectedPiece = parseInt(divId);
-        } else {
+        } else if (selected && selectedPiece === parseInt(divId)) {
             e.target.style.border = "";
 
             arr.forEach((square) => {
@@ -130,6 +134,18 @@ function handleClick(e) {
             highlighted = [];
             possMoves = [];
             selectedPiece = null;
+        } else {
+            e.target.style.border = "3px blue double";
+
+            arr.forEach((square) => {
+                const id = document.getElementById(square);
+                id.style.border = "3px rgba(24, 197, 255, 1) double";
+                selected = true;
+            });
+
+            highlighted = [divId, ...arr];
+            possMoves = [...arr];
+            selectedPiece = parseInt(divId);
         }
     } else if (promotion === false && AllyPiece !== AIPiece) {
         if (possMoves.includes(parseInt(divId))) {
