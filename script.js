@@ -111,12 +111,13 @@ let highlighted = [];
 let possMoves = [];
 let selectedPiece = null;
 
-
-socket.on("ChessboardPosition", (data) => {
-    console.log("Update from server:", data);
-    ChessBoardPosition = data
-    positionUpdate(ChessBoardPosition)
-});
+if (socket) {
+    socket.on("ChessboardPosition", (data) => {
+        console.log("Update from server:", data);
+        ChessBoardPosition = data
+        positionUpdate(ChessBoardPosition)
+    });
+}
 
 function handleClick(e) {
     if (multiplayer){
