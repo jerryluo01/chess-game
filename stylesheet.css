@@ -1,3 +1,7 @@
+html {
+    user-select: none;
+}
+
 .main-cont {
     position: relative;
     width: 88vh;
@@ -5,6 +9,7 @@
     display: flex;
     flex-wrap: wrap;
     margin: auto;
+    /* margin: calc((100vh - 88vh) / 2) auto 0 auto; */
 }
 .square {
     width: 11vh;
@@ -30,4 +35,47 @@
     margin-top: 13px;
     margin-left: auto;
     margin-right: auto;
+    
+}
+
+.pause {
+    height: 30px;
+    width: 30px;
+    display: flex;              
+    justify-content: space-between;
+    align-items: center;          
+    position: fixed;             
+    top: 10px;                   
+    left: 10px;                
+    cursor: pointer;
+}
+
+.bar1, .bar2 {
+    background-color: black;
+    width: 6px;    
+    height: 100%;  
+    display: inline-block;
+}
+
+.cont {
+    height: 30%;
+    width: 15%;
+    background-color: bisque;
+}
+
+.options {
+    border: 1px solid black;
+    cursor: pointer;
+    margin: auto;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }

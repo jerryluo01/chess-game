@@ -10,25 +10,47 @@ let moveLog = [];
 let squareAttack = [];
 let CHESSAI = false;
 let AIPiece;
+let multiplayer = false;
+let socket;
 
 let mode = localStorage.getItem("gameMode");
+console.log(mode)
 if (mode === "pve") {
+    multiplayer = false
+    //console.log("rgrthgreinjgrhefjggrhefnj")
     CHESSAI = true;
     let color = localStorage.getItem("color");
     if (color === "white") {
         AIPiece = "rnbkqp";
-        if (CHESSAI === true && AIPiece === "rnbkqp") {
-            AIMoveMaker();
-        }
-        // AIMoveMaker();
+
     } else {
         AIPiece = "RNBKQP";
         if (CHESSAI === true && AIPiece === "RNBKQP") {
             AIMoveMaker();
         }
-        // AIMoveMaker();
     }
-} else {
+} else if (mode === "pvp") {
+    AllyPiece = "RNBKQP";
+    EnemyPiece = "rnbkqp";
+    multiplayer = false
+    CHESSAI = false;
+    AIPiece = ""
+}
+else if (mode === "online"){
+        CHESSAI = false;
+        AIPiece = ""
+        multiplayer = true
+        //AllyPiece = "RNBKQP";
+        //EnemyPiece = "rnbkqp";
+        socket = io('http://localhost:5500');
+        socket.on("AllyPiece", (data) => {
+               AllyPiece = data 
+        })
+        socket.on("EnemyPiece", (data) => {
+            EnemyPiece = data 
+        })
+        //console.log(AllyPiece)
+        //console.log(EnemyPiece)
 }
 
 function createSquare() {
@@ -89,68 +111,85 @@ let highlighted = [];
 let possMoves = [];
 let selectedPiece = null;
 
+
+socket.on("ChessboardPosition", (data) => {
+    console.log("Update from server:", data);
+    ChessBoardPosition = data
+    positionUpdate(ChessBoardPosition)
+});
+
 function handleClick(e) {
+    if (multiplayer){
+        socket.on('moves', (data) => {
+            moveLog = data;
+        })
+    }
+    console.log(moveLog)
     const divId = e.target.id;
-    if (
-        //!selected &&
-        AllyPiece.includes(ChessBoardPosition[divId]) &&
-        !possMoves.includes(parseInt(divId)) &&
-        promotion === false &&
-        AllyPiece !== AIPiece
-    ) {
-        //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
-        const arr = legalMoves(
-            possibleMoves(ChessBoardPosition[divId], parseInt(divId)),
-            ChessBoardPosition,
-            ChessBoardPosition[divId],
-            parseInt(divId)
-        );
-        //console.log(legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId)));
+    if ((multiplayer === true && AllyPiece === "RNBKQP" && moveLog.length%2 === 0 )||
+    (multiplayer === true && AllyPiece === "rnbkqp" && moveLog.length%2 === 1) || multiplayer === false)
+    {   
+        if (
+            //!selected &&
+            (AllyPiece.includes(ChessBoardPosition[divId]) &&
+            !possMoves.includes(parseInt(divId)) &&
+            promotion === false &&
+            AllyPiece !== AIPiece)  
+        ) {
+            //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
+            const arr = legalMoves(
+                possibleMoves(ChessBoardPosition[divId], parseInt(divId)),
+                ChessBoardPosition,
+                ChessBoardPosition[divId],
+                parseInt(divId)
+            );
+            //console.log(legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId)));
 
-        highlighted.forEach((prev) => {
-            const id = document.getElementById(prev);
-            id.style.border = "";
-            id.style.outline = "";
-        });
-
-        if (!selected) {
-            e.target.style.border = "3px blue double";
-
-            arr.forEach((square) => {
-                const id = document.getElementById(square);
-                id.style.border = "3px rgba(24, 197, 255, 1) double";
-                selected = true;
-            });
-
-            highlighted = [divId, ...arr];
-            possMoves = [...arr];
-            selectedPiece = parseInt(divId);
-        } else if (selected && selectedPiece === parseInt(divId)) {
-            e.target.style.border = "";
-
-            arr.forEach((square) => {
-                const id = document.getElementById(square);
+            highlighted.forEach((prev) => {
+                const id = document.getElementById(prev);
                 id.style.border = "";
-                selected = false;
+                id.style.outline = "";
             });
 
-            highlighted = [];
-            possMoves = [];
-            selectedPiece = null;
-        } else {
-            e.target.style.border = "3px blue double";
+            if (!selected) {
+                e.target.style.border = "3px blue double";
 
-            arr.forEach((square) => {
-                const id = document.getElementById(square);
-                id.style.border = "3px rgba(24, 197, 255, 1) double";
-                selected = true;
-            });
+                arr.forEach((square) => {
+                    const id = document.getElementById(square);
+                    id.style.border = "3px rgba(24, 197, 255, 1) double";
+                    selected = true;
+                });
 
-            highlighted = [divId, ...arr];
-            possMoves = [...arr];
-            selectedPiece = parseInt(divId);
-        }
-    } else if (promotion === false && AllyPiece !== AIPiece) {
+                highlighted = [divId, ...arr];
+                possMoves = [...arr];
+                selectedPiece = parseInt(divId);
+            } else if (selected && selectedPiece === parseInt(divId)) {
+                e.target.style.border = "";
+
+                arr.forEach((square) => {
+                    const id = document.getElementById(square);
+                    id.style.border = "";
+                    selected = false;
+                });
+
+                highlighted = [];
+                possMoves = [];
+                selectedPiece = null;
+            } else {
+                e.target.style.border = "3px blue double";
+
+                arr.forEach((square) => {
+                    const id = document.getElementById(square);
+                    id.style.border = "3px rgba(24, 197, 255, 1) double";
+                    selected = true;
+                });
+
+                highlighted = [divId, ...arr];
+                possMoves = [...arr];
+                selectedPiece = parseInt(divId);
+            }
+        } 
+        else if (promotion === false && AllyPiece !== AIPiece) {
         if (possMoves.includes(parseInt(divId))) {
             RecentMove =
                 selectedPiece.toString().padStart(2, "0") +
@@ -160,7 +199,24 @@ function handleClick(e) {
             positionUpdate(ChessBoardPosition);
             //console.log(moveLog);
             moveLog.push(RecentMove);
-            console.log(moveLog);
+            //console.log(moveLog);
+            if (multiplayer){
+                //const socket = io('http://localhost:5500'); // connect to server
+                socket.emit('move',RecentMove)
+                socket.emit('ChessboardPosition',ChessBoardPosition)
+
+
+
+                // function sendMessage() {
+                //     const msg = document.querySelector('.message').value; // read input
+                //     socket.emit('message', msg); // send to server
+                // }
+
+            //     socket.on('moves', (data) => {
+            //         moveLog = data;
+            // })
+            }
+                
             if (ChessBoardPosition.substring(0, 8).includes("P")) {
                 promotion = true;
                 //console.log("efefefe")
@@ -189,6 +245,7 @@ function handleClick(e) {
             selected = false;
         });
     }
+}
 }
 
 function AIMoveMaker() {
@@ -257,9 +314,11 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
     possMoves = [];
 
     if (realBoard) {
-        const isUpperCase = AllyPiece === "RNBKQP";
-        AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
-        EnemyPiece = isUpperCase ? "RNBKQP" : "rnbkqp";
+        if (!multiplayer){
+            const isUpperCase = AllyPiece === "RNBKQP";
+            AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
+            EnemyPiece = isUpperCase ? "RNBKQP" : "rnbkqp";
+        }
 
         let state = CheckmateAndStalemate(chessBoardPosition);
         const cont = document.querySelector(".main-cont");
@@ -297,9 +356,9 @@ function reset() {
     possMoves = [];
     highlighted = [];
     moveLog = [];
-    chessBoardPosition =
+    ChessBoardPosition =
         "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
-    positionUpdate(chessBoardPosition);
+    positionUpdate(ChessBoardPosition);
 }
 
 function possibleMoves(piece, position, chessBoard = ChessBoardPosition) {

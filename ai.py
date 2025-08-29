@@ -287,9 +287,9 @@ def translateMovelog(moveLog):
 
 
 # print(custom_string_to_fen("rnbqkb0rppppn00p000000p00000000Q000000000000P000PPP00PPPRNB0KBNR"))
-print(minimax(translateMovelog(['54P38', '06n21', '61B47', '21n06', '62N45', '06n21']), 5, -math.inf, math.inf, False)[0].uci())
+#print(minimax(translateMovelog(['54P38', '06n21', '61B47', '21n06', '62N45', '06n21']), 5, -math.inf, math.inf, False)[0].uci())
 #print(valueBoard(translateBoard(chess.Board())))
-print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '52P44', '14p22', '59Q31']))
+#print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '52P44', '14p22', '59Q31']))
 #'31Q15'
 
 # print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '52P44', '14p22', '59Q31']))

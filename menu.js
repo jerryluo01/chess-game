@@ -21,17 +21,50 @@ function play(e) {
 
         w.addEventListener("click", () => {
             localStorage.setItem("color", "white");
+            localStorage.setItem("gameMode", type);
             window.location.href = "game.html";
         });
 
         b.addEventListener("click", () => {
             localStorage.setItem("color", "black");
+            localStorage.setItem("gameMode", type);
             window.location.href = "game.html";
         });
 
         return;
     }
+    // } else if (type === "online") {
+    //     const body = document.querySelector("body");
+    //     const btns = document.querySelectorAll("button");
+    //     btns.forEach((btn) => btn.remove());
+    //     const header = document.querySelector("header");
+    //     header.remove();
+
+    //     const host = document.createElement("button");
+    //     w.textContent = "White Side";
+    //     w.classList.add("color");
+
+    //     const join = document.createElement("button");
+    //     b.textContent = "Black Side";
+    //     b.classList.add("color");
+    //     body.append(host, join);
+
+    //     w.addEventListener("click", () => {
+    //         localStorage.setItem("color", "white");
+    //         localStorage.setItem("gameMode", type);
+    //         window.location.href = "game.html";
+    //     });
+
+    //     b.addEventListener("click", () => {
+    //         localStorage.setItem("color", "black");
+    //         localStorage.setItem("gameMode", type);
+    //         window.location.href = "game.html";
+    //     });
+
+    // }
 
     localStorage.setItem("gameMode", type);
     window.location.href = "game.html";
 }
+
+
