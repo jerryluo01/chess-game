@@ -1,3 +1,4 @@
+// let io;
 const body = document.querySelector("body");
 const pause = document.createElement("div");
 body.appendChild(pause);
@@ -10,7 +11,7 @@ pause.append(bar1, bar2);
 pause.addEventListener("click", stop);
 
 function stop() {
-    console.log('caca');
+    console.log("caca");
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 
@@ -39,19 +40,27 @@ function stop() {
     overlay.style.width = "100%";
 
     body.appendChild(overlay);
+
+    if (mode === "online") {
+        restartBtn.remove();
+    }
 }
 
 function resume() {
     const overlay = document.querySelector(".overlay");
     const all = [overlay, ...overlay.querySelectorAll("*")];
-    all.forEach((elem) => {elem.remove()});
+    all.forEach((elem) => {
+        elem.remove();
+    });
 }
 
 function restart() {
     const overlay = document.querySelector(".overlay");
     const all = [overlay, ...overlay.querySelectorAll("*")];
-    all.forEach((elem) => {elem.remove()});
-    reset()
+    all.forEach((elem) => {
+        elem.remove();
+    });
+    reset();
     if (CHESSAI === true && AIPiece === "RNBKQP") {
         AIMoveMaker();
     }
@@ -60,7 +69,19 @@ function restart() {
 function quit() {
     const overlay = document.querySelector(".overlay");
     const all = [overlay, ...overlay.querySelectorAll("*")];
-    all.forEach((elem) => {elem.remove()});
+    all.forEach((elem) => {
+        elem.remove();
+    });
     reset();
+    // if (mode === "online") {
+    //     socket.on("io", (data) => {
+    //         io = data;
+    //     });
+    //     io.on("disconnect", () => {
+    //         connectedUsers--;
+    //         console.log(`Connected Users: ${connectedUsers}`);==================CHECKOUT
+    //         console.log(`Player disconnected: ${socket.id}`);
+    //     });
+    // }
     window.location.href = "index.html";
 }

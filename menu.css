@@ -17,6 +17,10 @@ button {
     cursor: pointer;
 }
 
+button:hover {
+    background-color: rgba(170, 179, 192, 0.5);
+}
+
 header {
     font-size: 50px;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
