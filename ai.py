@@ -59,7 +59,7 @@ def RelativePieceValues(PieceType, index,endgame):
             displacement = int(WhiteQueen[index * 3: index * 3 + 3]) 
             return (900 + displacement)
         case "K":
-            if (endgame == False):
+            if (not endgame):
                 WhiteKing = ("-30-40-40-50-50-40-40-30"
                                 "-30-40-40-50-50-40-40-30"
                                 "-30-40-40-50-50-40-40-30"
@@ -138,7 +138,7 @@ def RelativePieceValues(PieceType, index,endgame):
             displacement = int((BlackQueen[index * 3: index * 3 + 3])) 
             return -(900 + displacement)
         case "k":
-            if (endgame == False):
+            if (not endgame):
                 BlackKing = ("+20+30+10+00+00+10+30+20"
                               "+20+20+00+00+00+00+20+20"
                               "-10-20-20-20-20-20-20-10"

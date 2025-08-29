@@ -1,7 +1,6 @@
 import math
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import chess
 import ai
 
 app = Flask(__name__)

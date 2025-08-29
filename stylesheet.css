@@ -23,11 +23,11 @@
     background-color: rgb(247, 187, 114);
 }
 
-canvas {
-    position: absolute;
-    pointer-events: none;
-    height: 88vh;
-    width: 88vh;
-    outline: 1px solid gray;
-    box-sizing: border-box;
+.reset {
+    height: 5%;
+    width: 15%;
+    border-radius: 15px;
+    margin-top: 13px;
+    margin-left: auto;
+    margin-right: auto;
 }
