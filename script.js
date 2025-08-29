@@ -13,15 +13,17 @@ let AIPiece;
 
 let mode = localStorage.getItem("gameMode");
 if (mode === "pve") {
-    CHESSAI = true;
     let color = localStorage.getItem("color");
     if (color === "white") {
         AIPiece = "rnbkqp";
-        AIMoveMaker();
+        // AIMoveMaker();
     } else {
         AIPiece = "RNBKQP";
-        AIMoveMaker();
+        // AIMoveMaker();
     }
+
+    CHESSAI = true;
+    AIMoveMaker();
     // if (CHESSAI === true && AIPiece === "RNBKQP") {
     //     AIMoveMaker();
     // }
