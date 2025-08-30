@@ -12,6 +12,7 @@ let CHESSAI = false;
 let AIPiece;
 let multiplayer = false;
 let socket;
+let numberOfPlayers = 0;
 
 let mode = localStorage.getItem("gameMode");
 console.log(mode)
@@ -111,24 +112,35 @@ let highlighted = [];
 let possMoves = [];
 let selectedPiece = null;
 
-if (socket) {
-    socket.on("ChessboardPosition", (data) => {
-        console.log("Update from server:", data);
-        ChessBoardPosition = data
-        positionUpdate(ChessBoardPosition)
-    });
-}
+socket.on("ChessboardPosition", (data) => {
+    console.log("Update from server:", data);
+    ChessBoardPosition = data
+    positionUpdate(ChessBoardPosition)
+});
+
+socket.on("moves", (data) => {
+    console.log("Update from server:", data);
+    moveLog = data
+    //positionUpdate(ChessBoardPosition)
+});
+
+socket.on("numberOfPlayers", (data) => {
+    numberOfPlayers = data
+    console.log("numberOfPlayers", data);
+});
+
+
 
 function handleClick(e) {
-    if (multiplayer){
-        socket.on('moves', (data) => {
-            moveLog = data;
-        })
-    }
+    // if (multiplayer){
+    //     socket.on('moves', (data) => {
+    //         moveLog = data;
+    //     })
+    // }
     console.log(moveLog)
     const divId = e.target.id;
-    if ((multiplayer === true && AllyPiece === "RNBKQP" && moveLog.length%2 === 0 )||
-    (multiplayer === true && AllyPiece === "rnbkqp" && moveLog.length%2 === 1) || multiplayer === false)
+    if ((multiplayer === true && AllyPiece === "RNBKQP" && moveLog.length%2 === 0  && numberOfPlayers === 2)||
+    (multiplayer === true && AllyPiece === "rnbkqp" && moveLog.length%2 === 1 && numberOfPlayers === 2) || multiplayer === false)
     {   
         if (
             //!selected &&
@@ -203,7 +215,7 @@ function handleClick(e) {
             //console.log(moveLog);
             if (multiplayer){
                 //const socket = io('http://localhost:5500'); // connect to server
-                socket.emit('move',RecentMove)
+                socket.emit('moves',moveLog)
                 socket.emit('ChessboardPosition',ChessBoardPosition)
 
 
