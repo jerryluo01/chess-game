@@ -65,6 +65,8 @@ io.on('connection',(socket) => {
 
     socket.on("ChessboardPosition", (data) => {
         io.emit("ChessboardPosition",data);
+        const result = CheckmateAndStalemate(data);
+        console.log("Checkmate/Stalemate:", result)
     });
 
     socket.emit("AllyPiece", AllyPiece)

@@ -41,19 +41,9 @@ else if (mode === "online"){
         CHESSAI = false;
         AIPiece = ""
         multiplayer = true
-        //AllyPiece = "RNBKQP";
-        //EnemyPiece = "rnbkqp";
         socket = io('http://localhost:5500');
-        socket.on("AllyPiece", (data) => {
-               AllyPiece = data 
-        })
-        socket.on("EnemyPiece", (data) => {
-            EnemyPiece = data 
-        })
-        //console.log(AllyPiece)
-        //console.log(EnemyPiece)
-}
 
+}
 function createSquare() {
     const cont = document.querySelector(".main-cont");
     for (let i = 0; i < 64; i++) {
@@ -112,23 +102,32 @@ let highlighted = [];
 let possMoves = [];
 let selectedPiece = null;
 
-socket.on("ChessboardPosition", (data) => {
-    console.log("Update from server:", data);
-    ChessBoardPosition = data
-    positionUpdate(ChessBoardPosition)
-});
+if (multiplayer){
 
-socket.on("moves", (data) => {
-    console.log("Update from server:", data);
-    moveLog = data
-    //positionUpdate(ChessBoardPosition)
-});
+    socket.on("ChessboardPosition", (data) => {
+        console.log("Update from server:", data);
+        ChessBoardPosition = data
+        positionUpdate(ChessBoardPosition)
+        console.log("Checkmate/Stalemate:", CheckmateAndStalemate(ChessBoardPosition))
+    });
 
-socket.on("numberOfPlayers", (data) => {
-    numberOfPlayers = data
-    console.log("numberOfPlayers", data);
-});
+    socket.on("moves", (data) => {
+        console.log("Update from server:", data);
+        moveLog = data
+    });
 
+    socket.on("numberOfPlayers", (data) => {
+        numberOfPlayers = data
+        console.log("numberOfPlayers", data);
+    });
+
+        socket.on("AllyPiece", (data) => {
+            AllyPiece = data 
+    })
+    socket.on("EnemyPiece", (data) => {
+        EnemyPiece = data 
+    });
+}
 
 
 function handleClick(e) {
@@ -336,6 +335,7 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
         let state = CheckmateAndStalemate(chessBoardPosition);
         const cont = document.querySelector(".main-cont");
         console.log(chessBoardPosition);
+       // console.log
         if (state === 1) {
             alert("CHECKMATE");
             const resetBtn = document.createElement("button");
