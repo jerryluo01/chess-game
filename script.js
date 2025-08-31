@@ -108,12 +108,21 @@ if (multiplayer){
         console.log("Update from server:", data);
         ChessBoardPosition = data
         positionUpdate(ChessBoardPosition)
-        console.log("Checkmate/Stalemate:", CheckmateAndStalemate(ChessBoardPosition))
+        socket.emit('GameOver',CheckmateAndStalemate(ChessBoardPosition))
+        //console.log("Checkmate/Stalemate:", CheckmateAndStalemate(ChessBoardPosition))
     });
 
     socket.on("moves", (data) => {
         console.log("Update from server:", data);
         moveLog = data
+    });
+
+    
+    socket.on("GameOver", (data) => {
+        console.log("Checkmate/Stalemate:", data);
+        socket.disconnect();
+        AlertCheckAndCheckMate(data, true)
+        //moveLog = data
     });
 
     socket.on("numberOfPlayers", (data) => {
@@ -216,8 +225,6 @@ function handleClick(e) {
                 //const socket = io('http://localhost:5500'); // connect to server
                 socket.emit('moves',moveLog)
                 socket.emit('ChessboardPosition',ChessBoardPosition)
-
-
 
                 // function sendMessage() {
                 //     const msg = document.querySelector('.message').value; // read input
@@ -333,32 +340,39 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
         }
 
         let state = CheckmateAndStalemate(chessBoardPosition);
-        const cont = document.querySelector(".main-cont");
         console.log(chessBoardPosition);
        // console.log
-        if (state === 1) {
-            alert("CHECKMATE");
-            const resetBtn = document.createElement("button");
-            resetBtn.classList.add("reset");
-            resetBtn.textContent = "Reset Game";
-            cont.appendChild(resetBtn);
-            resetBtn.addEventListener("click", () => {
-                reset();
-                resetBtn.remove();
-            });
-        } else if (state === 2) {
-            alert("STALEMATE");
-            const resetBtn = document.createElement("button");
-            resetBtn.classList.add("reset");
-            resetBtn.textContent = "Reset Game";
-            cont.appendChild(resetBtn);
-            resetBtn.addEventListener("click", () => {
-                reset();
-                resetBtn.remove();
-            });
-        }
+        AlertCheckAndCheckMate(state)
     }
     return chessBoardPosition;
+}
+
+function AlertCheckAndCheckMate(state, multiplayer = false) {
+    const cont = document.querySelector(".main-cont");
+
+    let message = "";
+    if (state === 1) message = "CHECKMATE";
+    else if (state === 2) message = "STALEMATE";
+    else return; 
+
+    alert(message);
+
+    const resetBtn = document.createElement("button");
+    resetBtn.classList.add("reset");
+    resetBtn.textContent = multiplayer ? "Rejoin Game" : "Reset Game";
+
+    cont.appendChild(resetBtn);
+
+    resetBtn.addEventListener("click", () => {
+        if (multiplayer === false){
+            reset(); 
+        }
+        else{
+            reset();
+            socket = io('http://localhost:5500');
+        }
+        resetBtn.remove();
+    });
 }
 function reset() {
     //console.log("RESET")
