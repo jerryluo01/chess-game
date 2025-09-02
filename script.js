@@ -15,15 +15,14 @@ let socket;
 let numberOfPlayers = 0;
 
 let mode = localStorage.getItem("gameMode");
-console.log(mode)
+console.log(mode);
 if (mode === "pve") {
-    multiplayer = false
+    multiplayer = false;
     //console.log("rgrthgreinjgrhefjggrhefnj")
     CHESSAI = true;
     let color = localStorage.getItem("color");
     if (color === "white") {
         AIPiece = "rnbkqp";
-
     } else {
         AIPiece = "RNBKQP";
         if (CHESSAI === true && AIPiece === "RNBKQP") {
@@ -33,16 +32,14 @@ if (mode === "pve") {
 } else if (mode === "pvp") {
     AllyPiece = "RNBKQP";
     EnemyPiece = "rnbkqp";
-    multiplayer = false
+    multiplayer = false;
     CHESSAI = false;
-    AIPiece = ""
-}
-else if (mode === "online"){
-        CHESSAI = false;
-        AIPiece = ""
-        multiplayer = true
-        socket = io('http://localhost:5500');
-
+    AIPiece = "";
+} else if (mode === "online") {
+    CHESSAI = false;
+    AIPiece = "";
+    multiplayer = true;
+    socket = io("http://localhost:5500");
 }
 function createSquare() {
     const cont = document.querySelector(".main-cont");
@@ -102,42 +99,67 @@ let highlighted = [];
 let possMoves = [];
 let selectedPiece = null;
 
-if (multiplayer){
-
+if (multiplayer) {
     socket.on("ChessboardPosition", (data) => {
         console.log("Update from server:", data);
-        ChessBoardPosition = data
-        positionUpdate(ChessBoardPosition)
-        socket.emit('GameOver',CheckmateAndStalemate(ChessBoardPosition))
+        ChessBoardPosition = data;
+        positionUpdate(ChessBoardPosition);
+        socket.emit("GameOver", CheckmateAndStalemate(ChessBoardPosition));
         //console.log("Checkmate/Stalemate:", CheckmateAndStalemate(ChessBoardPosition))
     });
 
     socket.on("moves", (data) => {
         console.log("Update from server:", data);
-        moveLog = data
+        moveLog = data;
     });
 
-    
     socket.on("GameOver", (data) => {
         console.log("Checkmate/Stalemate:", data);
         socket.disconnect();
-        AlertCheckAndCheckMate(data, true)
+        AlertCheckAndCheckMate(data, true);
         //moveLog = data
     });
 
     socket.on("numberOfPlayers", (data) => {
-        numberOfPlayers = data
+        numberOfPlayers = data;
         console.log("numberOfPlayers", data);
+        if (numberOfPlayers < 2) wait();
     });
 
-        socket.on("AllyPiece", (data) => {
-            AllyPiece = data 
-    })
+    socket.on("AllyPiece", (data) => {
+        AllyPiece = data;
+    });
     socket.on("EnemyPiece", (data) => {
-        EnemyPiece = data 
+        EnemyPiece = data;
     });
 }
 
+function wait() {
+    const body = document.querySelector("body");
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    body.appendChild(overlay);
+    const div = document.createElement("div");
+    div.classList.add("cont");
+    div.style.width = "60%";
+    div.style.height = "60%";
+    overlay.appendChild(div);
+    div.textContent = "Waiting for second player ...";
+    const quitBtn = document.createElement("div");
+    quitBtn.classList.add("options");
+    quitBtn.textContent = "Main Menu";
+    quitBtn.addEventListener("click", quit);
+    div.appendChild(quitBtn);
+    socket.on("numberOfPlayers", (data) => {
+        numberOfPlayers = data;
+        if (numberOfPlayers === 2) {
+            const all = [overlay, ...overlay.querySelectorAll("*")];
+            all.forEach((elem) => {
+                elem.remove();
+            });
+        }
+    });
+}
 
 function handleClick(e) {
     // if (multiplayer){
@@ -145,17 +167,27 @@ function handleClick(e) {
     //         moveLog = data;
     //     })
     // }
-    console.log(moveLog)
+    let sound = new Audio("piece/move-self.mp3");
+    sound.play();
+    console.log(moveLog);
     const divId = e.target.id;
-    if ((multiplayer === true && AllyPiece === "RNBKQP" && moveLog.length%2 === 0  && numberOfPlayers === 2)||
-    (multiplayer === true && AllyPiece === "rnbkqp" && moveLog.length%2 === 1 && numberOfPlayers === 2) || multiplayer === false)
-    {   
+    if (
+        (multiplayer === true &&
+            AllyPiece === "RNBKQP" &&
+            moveLog.length % 2 === 0 &&
+            numberOfPlayers === 2) ||
+        (multiplayer === true &&
+            AllyPiece === "rnbkqp" &&
+            moveLog.length % 2 === 1 &&
+            numberOfPlayers === 2) ||
+        multiplayer === false
+    ) {
         if (
             //!selected &&
-            (AllyPiece.includes(ChessBoardPosition[divId]) &&
+            AllyPiece.includes(ChessBoardPosition[divId]) &&
             !possMoves.includes(parseInt(divId)) &&
             promotion === false &&
-            AllyPiece !== AIPiece)  
+            AllyPiece !== AIPiece
         ) {
             //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
             const arr = legalMoves(
@@ -209,62 +241,64 @@ function handleClick(e) {
                 possMoves = [...arr];
                 selectedPiece = parseInt(divId);
             }
-        } 
-        else if (promotion === false && AllyPiece !== AIPiece) {
-        if (possMoves.includes(parseInt(divId))) {
-            RecentMove =
-                selectedPiece.toString().padStart(2, "0") +
-                ChessBoardPosition[selectedPiece] +
-                divId.padStart(2, "0");
-            ChessBoardPosition = performMoves(RecentMove, ChessBoardPosition);
-            positionUpdate(ChessBoardPosition);
-            //console.log(moveLog);
-            moveLog.push(RecentMove);
-            //console.log(moveLog);
-            if (multiplayer){
-                //const socket = io('http://localhost:5500'); // connect to server
-                socket.emit('moves',moveLog)
-                socket.emit('ChessboardPosition',ChessBoardPosition)
-
-                // function sendMessage() {
-                //     const msg = document.querySelector('.message').value; // read input
-                //     socket.emit('message', msg); // send to server
-                // }
-
-            //     socket.on('moves', (data) => {
-            //         moveLog = data;
-            // })
-            }
-                
-            if (ChessBoardPosition.substring(0, 8).includes("P")) {
-                promotion = true;
-                //console.log("efefefe")
-                //console.log(EnemyPiece);
-                //console.log(AllyPiece);
-                pawnPromotion(
-                    ChessBoardPosition.substring(0, 8).indexOf("P"),
-                    EnemyPiece
+        } else if (promotion === false && AllyPiece !== AIPiece) {
+            if (possMoves.includes(parseInt(divId))) {
+                RecentMove =
+                    selectedPiece.toString().padStart(2, "0") +
+                    ChessBoardPosition[selectedPiece] +
+                    divId.padStart(2, "0");
+                ChessBoardPosition = performMoves(
+                    RecentMove,
+                    ChessBoardPosition
                 );
-            } else if (ChessBoardPosition.substring(56, 64).includes("p")) {
-                promotion = true;
-                pawnPromotion(
-                    ChessBoardPosition.substring(56, 64).indexOf("p"),
-                    EnemyPiece
-                );
-            } else {
-                if (CHESSAI) {
-                    AIMoveMaker();
+                positionUpdate(ChessBoardPosition);
+                //console.log(moveLog);
+                moveLog.push(RecentMove);
+                //console.log(moveLog);
+                if (multiplayer) {
+                    //const socket = io('http://localhost:5500'); // connect to server
+                    socket.emit("moves", moveLog);
+                    socket.emit("ChessboardPosition", ChessBoardPosition);
+
+                    // function sendMessage() {
+                    //     const msg = document.querySelector('.message').value; // read input
+                    //     socket.emit('message', msg); // send to server
+                    // }
+
+                    //     socket.on('moves', (data) => {
+                    //         moveLog = data;
+                    // })
+                }
+
+                if (ChessBoardPosition.substring(0, 8).includes("P")) {
+                    promotion = true;
+                    //console.log("efefefe")
+                    //console.log(EnemyPiece);
+                    //console.log(AllyPiece);
+                    pawnPromotion(
+                        ChessBoardPosition.substring(0, 8).indexOf("P"),
+                        EnemyPiece
+                    );
+                } else if (ChessBoardPosition.substring(56, 64).includes("p")) {
+                    promotion = true;
+                    pawnPromotion(
+                        ChessBoardPosition.substring(56, 64).indexOf("p"),
+                        EnemyPiece
+                    );
+                } else {
+                    if (CHESSAI) {
+                        AIMoveMaker();
+                    }
                 }
             }
+            highlighted.forEach((square) => {
+                const id = document.getElementById(square);
+                id.style.border = "";
+                id.style.outline = "";
+                selected = false;
+            });
         }
-        highlighted.forEach((square) => {
-            const id = document.getElementById(square);
-            id.style.border = "";
-            id.style.outline = "";
-            selected = false;
-        });
     }
-}
 }
 
 function AIMoveMaker() {
@@ -333,7 +367,7 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
     possMoves = [];
 
     if (realBoard) {
-        if (!multiplayer){
+        if (!multiplayer) {
             const isUpperCase = AllyPiece === "RNBKQP";
             AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
             EnemyPiece = isUpperCase ? "RNBKQP" : "rnbkqp";
@@ -341,8 +375,8 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
 
         let state = CheckmateAndStalemate(chessBoardPosition);
         console.log(chessBoardPosition);
-       // console.log
-        AlertCheckAndCheckMate(state)
+        // console.log
+        AlertCheckAndCheckMate(state);
     }
     return chessBoardPosition;
 }
@@ -353,7 +387,7 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
     let message = "";
     if (state === 1) message = "CHECKMATE";
     else if (state === 2) message = "STALEMATE";
-    else return; 
+    else return;
 
     alert(message);
 
@@ -364,12 +398,14 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
     cont.appendChild(resetBtn);
 
     resetBtn.addEventListener("click", () => {
-        if (multiplayer === false){
-            reset(); 
-        }
-        else{
+        if (multiplayer === false) {
             reset();
-            socket = io('http://localhost:5500');
+        } else {
+            reset();
+            // socket = io("http://localhost:5500");
+            socket.on("connect", () => {
+                console.log(`User ${socket.id} has reconnected`);
+            });
         }
         resetBtn.remove();
     });

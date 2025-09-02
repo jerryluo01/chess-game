@@ -36,9 +36,6 @@ function stop() {
     cont.append(resumeBtn, restartBtn, quitBtn);
     overlay.appendChild(cont);
 
-    overlay.style.height = "100%";
-    overlay.style.width = "100%";
-
     body.appendChild(overlay);
 
     if (mode === "online") {
