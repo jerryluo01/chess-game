@@ -14,6 +14,7 @@ let multiplayer = false;
 let socket;
 let numberOfPlayers = 0;
 const sound = new Audio("piece/move-self.mp3");
+const capture = new Audio("piece/capture.mp3");
 
 let mode = localStorage.getItem("gameMode");
 console.log(mode);
@@ -230,6 +231,7 @@ function handleClick(e) {
                 possMoves = [];
                 selectedPiece = null;
             } else {
+                sound.play();
                 e.target.style.border = "3px blue double";
 
                 arr.forEach((square) => {

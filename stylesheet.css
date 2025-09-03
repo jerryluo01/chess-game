@@ -9,7 +9,7 @@ html {
     display: flex;
     flex-wrap: wrap;
     margin: auto;
-    /* margin: calc((100vh - 88vh) / 2) auto 0 auto; */
+    outline: #8ca2ad solid 1px;
 }
 .square {
     width: 11vh;
