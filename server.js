@@ -7,6 +7,7 @@ const playerColors = {}; // socket.id -> color
 const colors = ["rnbkqp", "RNBKQP"];
 let moveLogServer = [];
 let chessBoard = "";
+let players = [];
 
 app.set("view engine", "ejs");
 
@@ -19,6 +20,9 @@ server.listen(5500, () => {
 });
 
 io.on("connection", (socket) => {
+    console.log("user: " + socket.id);
+    players.push(socket.id);
+    console.log(players);
     if (colors.length <= 0) {
         console.log(`Connection refused: ${socket.id}`);
         socket.emit("full", "Server is full. Try again later.");
@@ -40,14 +44,18 @@ io.on("connection", (socket) => {
     //console.log(EnemyPiece)
     //connectedUsers++
     socket.on("disconnect", () => {
-        const bothPlayersConnected = colors.length === 0;
+        for (let i = 0; i < players.length; i++) {
+            if (players[i] === socket.id) players.splice(i, 1);
+        }
+        console.log(players);
         if (assignedColor) {
             colors.push(assignedColor); // return to pool
         }
+        const bothPlayersConnected = colors.length === 0;
         console.log(`user disconnected: ${socket.id}`);
         io.emit("numberOfPlayers", 2 - colors.length);
 
-        if (bothPlayersConnected) {
+        if (players.length < 2) {
             console.log("Game reset because a player left.");
             io.emit("moves", []);
             io.emit(
@@ -57,7 +65,6 @@ io.on("connection", (socket) => {
         }
     });
 
-    console.log("user: " + socket.id);
     socket.on("moves", (data) => {
         io.emit("moves", data);
     });

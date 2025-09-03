@@ -309,6 +309,7 @@ function AIMoveMaker() {
     getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
         aiMove = aiMove.replace(/(?<!\d)(\d)(?!\d)/g, "0$1");
         console.log("AI move:", aiMove);
+        if (!aiMove) return;
         moveLog.push(aiMove);
         ChessBoardPosition = performMoves(aiMove, ChessBoardPosition);
         sound.play();
@@ -322,9 +323,9 @@ function AIMoveMaker() {
         if (ChessBoardPosition.substring(56, 64).includes("P")) {
             c = ChessBoardPosition.indexOf("p", 56);
             ChessBoardPosition =
-                ChessBoardPosition.substring(0, 56 + parseInt(c)) +
+                ChessBoardPosition.substring(0, parseInt(c)) +
                 "q" +
-                ChessBoardPosition.substring(parseInt(c) + 57);
+                ChessBoardPosition.substring(parseInt(c) + 1);
         }
         positionUpdate(ChessBoardPosition);
     });
@@ -408,9 +409,10 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
             reset();
         } else {
             reset();
-            // socket = io("http://localhost:5500");
-            socket.on("connect", () => {
-                console.log(`User ${socket.id} has reconnected`);
+            socket.disconnect();
+            socket = io("http://localhost:5500");
+            socket.on("numberOfPlayers", (data) => {
+                numberOfPlayers = data;
             });
         }
         resetBtn.remove();
