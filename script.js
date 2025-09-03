@@ -336,10 +336,6 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
 
     PieceEaten = chessBoardPosition[parseInt(moves.substring(3, 5))];
 
-    // let state = CheckmateAndStalemate(chessBoardPosition);
-    // console.log(chessBoardPosition);
-    // AlertCheckAndCheckMate(state);
-
     //let BoardBeforeMove = chessBoardPosition
 
     chessBoardPosition =
