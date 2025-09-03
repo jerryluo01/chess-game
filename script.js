@@ -311,6 +311,7 @@ function AIMoveMaker() {
         console.log("AI move:", aiMove);
         moveLog.push(aiMove);
         ChessBoardPosition = performMoves(aiMove, ChessBoardPosition);
+        sound.play();
         if (ChessBoardPosition.substring(0, 8).includes("P")) {
             c = ChessBoardPosition.indexOf("P", 0);
             ChessBoardPosition =
@@ -334,6 +335,10 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
     afterPos = parseInt(moves.substring(3, 5));
 
     PieceEaten = chessBoardPosition[parseInt(moves.substring(3, 5))];
+
+    // let state = CheckmateAndStalemate(chessBoardPosition);
+    // console.log(chessBoardPosition);
+    // AlertCheckAndCheckMate(state);
 
     //let BoardBeforeMove = chessBoardPosition
 
