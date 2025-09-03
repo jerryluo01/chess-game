@@ -13,6 +13,7 @@ let AIPiece;
 let multiplayer = false;
 let socket;
 let numberOfPlayers = 0;
+const sound = new Audio("piece/move-self.mp3");
 
 let mode = localStorage.getItem("gameMode");
 console.log(mode);
@@ -167,8 +168,6 @@ function handleClick(e) {
     //         moveLog = data;
     //     })
     // }
-    let sound = new Audio("piece/move-self.mp3");
-    sound.play();
     console.log(moveLog);
     const divId = e.target.id;
     if (
@@ -205,6 +204,8 @@ function handleClick(e) {
             });
 
             if (!selected) {
+                sound.play();
+
                 e.target.style.border = "3px blue double";
 
                 arr.forEach((square) => {
@@ -243,6 +244,7 @@ function handleClick(e) {
             }
         } else if (promotion === false && AllyPiece !== AIPiece) {
             if (possMoves.includes(parseInt(divId))) {
+                sound.play();
                 RecentMove =
                     selectedPiece.toString().padStart(2, "0") +
                     ChessBoardPosition[selectedPiece] +
@@ -386,7 +388,8 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
 
     let message = "";
     if (state === 1) message = "CHECKMATE";
-    else if (state === 2) message = "STALEMATE";
+    else if (state === 2) message = "INSUFFICIENT MATERIAL";
+    else if (state === 3) message = "STALEMATE";
     else return;
 
     alert(message);
@@ -517,11 +520,10 @@ function CheckmateAndStalemate(chessBoardPosPosition) {
     potentialMovesList = [...potentialMovesList];
     if (check && potentialMovesList.length === 0) {
         return 1;
-    } else if (
-        (!check && potentialMovesList.length === 0) ||
-        insufficientMaterial(chessBoardPosPosition)
-    ) {
+    } else if (insufficientMaterial(chessBoardPosPosition)) {
         return 2;
+    } else if (!check && potentialMovesList.length === 0) {
+        return 3;
     } else {
         return 0;
     }
