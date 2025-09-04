@@ -210,7 +210,12 @@ def moveScore(board, move):
 
 def minimax(positionBoard, depth, alpha, beta, color):
     if depth == 0 or positionBoard.is_game_over():
-        return None, valueBoard(translateBoard(positionBoard))
+        if positionBoard.is_checkmate():
+            return None, -math.inf if color else math.inf
+        elif positionBoard.is_stalemate() or positionBoard.is_insufficient_material():
+            return None, 0
+        else: 
+            return None, valueBoard(translateBoard(positionBoard))
 
     bestMove = None
     moves = list(positionBoard.legal_moves)
