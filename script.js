@@ -398,14 +398,13 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
 
         let state = CheckmateAndStalemate(chessBoardPosition);
         console.log(chessBoardPosition);
-        // console.log
         AlertCheckAndCheckMate(state);
     }
     return chessBoardPosition;
 }
 
 function AlertCheckAndCheckMate(state, multiplayer = false) {
-    const cont = document.querySelector(".main-cont");
+    const cont = document.querySelector("body");
 
     let message = "";
     if (state === 1) message = "CHECKMATE";
@@ -449,6 +448,10 @@ function reset() {
     positionUpdate(ChessBoardPosition);
     const cont = document.querySelector(".main-cont");
     cont.style.flexWrap = "wrap";
+    const div = document.querySelectorAll(".square");
+    div.forEach((square) => {
+        square.style.border = "";
+    });
 }
 
 function possibleMoves(piece, position, chessBoard = ChessBoardPosition) {
