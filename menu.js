@@ -66,5 +66,3 @@ function play(e) {
     localStorage.setItem("gameMode", type);
     window.location.href = "game.html";
 }
-
-

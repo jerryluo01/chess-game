@@ -27,6 +27,8 @@ if (mode === "pve") {
         AIPiece = "rnbkqp";
     } else {
         AIPiece = "RNBKQP";
+        const cont = document.querySelector(".main-cont");
+        cont.style.flexWrap = "wrap-reverse";
         if (CHESSAI === true && AIPiece === "RNBKQP") {
             AIMoveMaker();
         }
@@ -117,7 +119,7 @@ if (multiplayer) {
 
     socket.on("GameOver", (data) => {
         console.log("Checkmate/Stalemate:", data);
-        socket.disconnect();
+        // socket.disconnect();
         AlertCheckAndCheckMate(data, true);
         //moveLog = data
     });
@@ -130,6 +132,13 @@ if (multiplayer) {
 
     socket.on("AllyPiece", (data) => {
         AllyPiece = data;
+        if (AllyPiece === "rnbkqp") {
+            const cont = document.querySelector(".main-cont");
+            cont.style.flexWrap = "wrap-reverse";
+        } else {
+            const cont = document.querySelector(".main-cont");
+            cont.style.flexWrap = "wrap";
+        }
     });
     socket.on("EnemyPiece", (data) => {
         EnemyPiece = data;
@@ -374,9 +383,17 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
 
     if (realBoard) {
         if (!multiplayer) {
+            const cont = document.querySelector(".main-cont");
             const isUpperCase = AllyPiece === "RNBKQP";
             AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
             EnemyPiece = isUpperCase ? "RNBKQP" : "rnbkqp";
+            if (!CHESSAI) {
+                if (AllyPiece === "rnbkqp") {
+                    cont.style.flexWrap = "wrap-reverse";
+                } else {
+                    cont.style.flexWrap = "wrap";
+                }
+            }
         }
 
         let state = CheckmateAndStalemate(chessBoardPosition);
@@ -430,6 +447,8 @@ function reset() {
     ChessBoardPosition =
         "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
     positionUpdate(ChessBoardPosition);
+    const cont = document.querySelector(".main-cont");
+    cont.style.flexWrap = "wrap";
 }
 
 function possibleMoves(piece, position, chessBoard = ChessBoardPosition) {
