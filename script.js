@@ -412,27 +412,29 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
     else if (state === 3) message = "STALEMATE";
     else return;
 
-    alert(message);
+    setTimeout(() => {
+        alert(message);
 
-    const resetBtn = document.createElement("button");
-    resetBtn.classList.add("reset");
-    resetBtn.textContent = multiplayer ? "Rejoin Game" : "Reset Game";
+        const resetBtn = document.createElement("button");
+        resetBtn.classList.add("reset");
+        resetBtn.textContent = multiplayer ? "Rejoin Game" : "Reset Game";
 
-    cont.appendChild(resetBtn);
+        cont.appendChild(resetBtn);
 
-    resetBtn.addEventListener("click", () => {
-        if (multiplayer === false) {
-            reset();
-        } else {
-            reset();
-            socket.disconnect();
-            socket = io("http://localhost:5500");
-            socket.on("numberOfPlayers", (data) => {
-                numberOfPlayers = data;
-            });
-        }
-        resetBtn.remove();
-    });
+        resetBtn.addEventListener("click", () => {
+            if (multiplayer === false) {
+                reset();
+            } else {
+                reset();
+                socket.disconnect();
+                socket = io("http://localhost:5500");
+                socket.on("numberOfPlayers", (data) => {
+                    numberOfPlayers = data;
+                });
+            }
+            resetBtn.remove();
+        });
+    }, 0);
 }
 function reset() {
     //console.log("RESET")
