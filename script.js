@@ -303,18 +303,8 @@ function handleClick(e) {
                 moveLog.push(RecentMove);
                 //console.log(moveLog);
                 if (multiplayer) {
-                    //const socket = io('http://localhost:5500'); // connect to server
                     socket.emit("moves", moveLog);
                     socket.emit("ChessboardPosition", ChessBoardPosition);
-
-                    // function sendMessage() {
-                    //     const msg = document.querySelector('.message').value; // read input
-                    //     socket.emit('message', msg); // send to server
-                    // }
-
-                    //     socket.on('moves', (data) => {
-                    //         moveLog = data;
-                    // })
                 }
 
                 if (ChessBoardPosition.substring(0, 8).includes("P")) {
