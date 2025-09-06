@@ -8,6 +8,7 @@ const colors = ["rnbkqp", "RNBKQP"];
 let moveLogServer = [];
 let chessBoard = "";
 let players = [];
+let port = process.env.PORT || 5500;
 
 app.set("view engine", "ejs");
 
@@ -15,7 +16,7 @@ app.get("/home", (req, res) => {
     res.render("home");
 });
 
-server.listen(5500, () => {
+server.listen(port, () => {
     console.log("Server working");
 });
 

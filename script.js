@@ -16,6 +16,12 @@ let numberOfPlayers = 0;
 let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
+let serverUrl;
+if (window.location.hostname === "localhost") {
+    serverUrl = "http://localhost:5500";
+} else {
+    serverUrl = "https://chess-game-pwkg.onrender.com";
+}
 
 let mode = localStorage.getItem("gameMode");
 console.log(mode);
@@ -55,7 +61,7 @@ if (mode === "pve") {
     CHESSAI = false;
     AIPiece = "";
     multiplayer = true;
-    socket = io("http://localhost:5500");
+    socket = io(serverUrl);
 }
 function createSquare() {
     const cont = document.querySelector(".main-cont");
@@ -474,7 +480,7 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
         } else {
             reset();
             window.location.href = "game.html";
-            socket = io("http://localhost:5500");
+            socket = io(serverUrl);
             socket.on("numberOfPlayers", (data) => {
                 numberOfPlayers = data;
             });
