@@ -358,15 +358,30 @@ function pawnPossibleMoves(
                     potentialIndex ===
                         parseInt(previousMove.substring(3)) + 8 * directionmult
                 ) {
-                    positionIndexList.push(potentialIndex);
+                    if (
+                        !(c === 0 && potentialIndex % 8 === 7) &&
+                        !(c === 7 && potentialIndex % 8 === 0)
+                    ) {
+                        positionIndexList.push(potentialIndex);
+                    }
                 }
             }
             if (!enemyPiece.includes(boardPos[potentialIndex])) continue;
         }
         if (directions[i] === 7 || directions[i] === 9) {
-            squareUnderAttackList.push(potentialIndex);
+            if (
+                !(c === 0 && potentialIndex % 8 === 7) &&
+                !(c === 7 && potentialIndex % 8 === 0)
+            ) {
+                squareUnderAttackList.push(potentialIndex);
+            }
         }
-        positionIndexList.push(potentialIndex);
+        if (
+            !(c === 0 && potentialIndex % 8 === 7) &&
+            !(c === 7 && potentialIndex % 8 === 0)
+        ) {
+            positionIndexList.push(potentialIndex);
+        }
     }
     if (!SquareUnderAttack) {
         return positionIndexList;
@@ -451,62 +466,62 @@ function promoted(e) {
                 ChessBoardPosition.substring(0, c) +
                 "Q" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "q"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "q";
             break;
         case "rl":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "R" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "r"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "r";
             break;
         case "nl":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "N" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "n"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "n";
             break;
         case "bl":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "B" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "b"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "b";
             break;
         case "qd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "q" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "q"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "q";
             break;
         case "rd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "r" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "r"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "r";
             break;
         case "nd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "n" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "n"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "n";
             break;
         case "bd":
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, 56 + parseInt(c)) +
                 "b" +
                 ChessBoardPosition.substring(parseInt(c) + 57);
-                moveLog[moveLog.length-1] = moveLog[moveLog.length-1] + "b"
+            moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "b";
             break;
     }
     //console.log(ChessBoardPosition);
     positionUpdate(ChessBoardPosition);
     promotion = false;
-    getAIMove(moveLog, ChessBoardPosition).then(aiMove => {
+    getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
         console.log("AI move:", aiMove);
     });
     if (id.includes("l")) {

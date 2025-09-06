@@ -13,6 +13,7 @@ let AIPiece;
 let multiplayer = false;
 let socket;
 let numberOfPlayers = 0;
+let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
 
@@ -39,6 +40,17 @@ if (mode === "pve") {
     multiplayer = false;
     CHESSAI = false;
     AIPiece = "";
+    const body = document.querySelector("body");
+    const slider = document.createElement("input");
+    const label = document.createElement("label");
+    body.appendChild(label);
+    label.textContent = "Flip";
+    label.prepend(slider);
+    slider.classList.add("slider");
+    slider.type = "checkbox";
+    slider.addEventListener("change", () => {
+        slider.checked ? (ON = true) : (ON = false);
+    });
 } else if (mode === "online") {
     CHESSAI = false;
     AIPiece = "";
@@ -117,6 +129,11 @@ if (multiplayer) {
         moveLog = data;
     });
 
+    socket.on("full", (data) => {
+        wait(true);
+        console.log("dhehe", data);
+    });
+
     socket.on("GameOver", (data) => {
         console.log("Checkmate/Stalemate:", data);
         // socket.disconnect();
@@ -126,8 +143,11 @@ if (multiplayer) {
 
     socket.on("numberOfPlayers", (data) => {
         numberOfPlayers = data;
-        console.log("numberOfPlayers", data);
+        console.log("numberOfPlayers123", data);
         if (numberOfPlayers < 2) wait();
+        // else if (numberOfPlayers > 2) {
+        //   wait(true);
+        // }
     });
 
     socket.on("AllyPiece", (data) => {
@@ -145,7 +165,7 @@ if (multiplayer) {
     });
 }
 
-function wait() {
+function wait(full = false) {
     const body = document.querySelector("body");
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
@@ -155,7 +175,15 @@ function wait() {
     div.style.width = "60%";
     div.style.height = "60%";
     overlay.appendChild(div);
-    div.textContent = "Waiting for second player ...";
+    //if full : div
+    // AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
+
+    div.textContent = full ? "Server Full" : "Waiting for second player ...";
+    // if (full) {
+    //     div.textContent = "Server Full";
+    // } else {
+    //     div.textContent = "Waiting for second player ...";
+    // }
     const quitBtn = document.createElement("div");
     quitBtn.classList.add("options");
     quitBtn.textContent = "Main Menu";
@@ -387,7 +415,7 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
             const isUpperCase = AllyPiece === "RNBKQP";
             AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
             EnemyPiece = isUpperCase ? "RNBKQP" : "rnbkqp";
-            if (!CHESSAI) {
+            if (!CHESSAI && ON && mode === "pvp") {
                 if (AllyPiece === "rnbkqp") {
                     cont.style.flexWrap = "wrap-reverse";
                 } else {
@@ -404,37 +432,56 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
 }
 
 function AlertCheckAndCheckMate(state, multiplayer = false) {
-    const cont = document.querySelector("body");
+    const body = document.querySelector("body");
 
     let message = "";
+    if (state !== 0 && multiplayer === true) socket.disconnect();
     if (state === 1) message = "CHECKMATE";
     else if (state === 2) message = "INSUFFICIENT MATERIAL";
     else if (state === 3) message = "STALEMATE";
     else return;
 
-    setTimeout(() => {
-        alert(message);
-
-        const resetBtn = document.createElement("button");
-        resetBtn.classList.add("reset");
-        resetBtn.textContent = multiplayer ? "Rejoin Game" : "Reset Game";
-
-        cont.appendChild(resetBtn);
-
-        resetBtn.addEventListener("click", () => {
-            if (multiplayer === false) {
-                reset();
-            } else {
-                reset();
-                socket.disconnect();
-                socket = io("http://localhost:5500");
-                socket.on("numberOfPlayers", (data) => {
-                    numberOfPlayers = data;
-                });
-            }
-            resetBtn.remove();
+    // setTimeout(() => {
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    const div = document.createElement("div");
+    div.classList.add("cont");
+    div.style.height = "20%";
+    overlay.appendChild(div);
+    body.appendChild(overlay);
+    div.textContent = `${message}`;
+    const ok = document.createElement("div");
+    div.appendChild(ok);
+    ok.classList.add("ok");
+    ok.textContent = "OK";
+    ok.addEventListener("click", () => {
+        const all = [overlay, ...overlay.querySelectorAll("*")];
+        all.forEach((elem) => {
+            elem.remove();
         });
-    }, 0);
+    });
+
+    const resetBtn = document.createElement("button");
+    resetBtn.classList.add("reset");
+    resetBtn.textContent = multiplayer ? "Rejoin Game" : "Reset Game";
+
+    body.appendChild(resetBtn);
+
+    resetBtn.addEventListener("click", () => {
+        if (multiplayer === false) {
+            reset();
+            if (CHESSAI === true && AIPiece === "RNBKQP") AIMoveMaker();
+        } else {
+            reset();
+            window.location.href = "game.html";
+            socket = io("http://localhost:5500");
+            socket.on("numberOfPlayers", (data) => {
+                numberOfPlayers = data;
+            });
+        }
+        resetBtn.remove();
+    });
+    // }, 0);
 }
 function reset() {
     //console.log("RESET")
@@ -449,7 +496,7 @@ function reset() {
         "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
     positionUpdate(ChessBoardPosition);
     const cont = document.querySelector(".main-cont");
-    cont.style.flexWrap = "wrap";
+    if (mode !== "pve") cont.style.flexWrap = "wrap";
     const div = document.querySelectorAll(".square");
     div.forEach((square) => {
         square.style.border = "";

@@ -26,6 +26,7 @@ io.on("connection", (socket) => {
     if (colors.length <= 0) {
         console.log(`Connection refused: ${socket.id}`);
         socket.emit("full", "Server is full. Try again later.");
+        io.emit("full", 1);
         socket.disconnect(true); // immediately disconnect
         return;
     }
