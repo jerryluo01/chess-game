@@ -39,11 +39,6 @@ io.on("connection", (socket) => {
     } else {
         EnemyPiece = "RNBKQP";
     }
-    //EnemyPiece = colors[(connectedUsers === 0) ? 1 : 0]
-
-    //console.log(AllyPiece)
-    //console.log(EnemyPiece)
-    //connectedUsers++
     socket.on("disconnect", () => {
         for (let i = 0; i < players.length; i++) {
             if (players[i] === socket.id) players.splice(i, 1);
