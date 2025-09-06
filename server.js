@@ -12,7 +12,7 @@ let port = process.env.PORT || 5500;
 
 app.set("view engine", "ejs");
 
-app.get("/home", (req, res) => {
+app.get("/", (req, res) => {
     res.render("home");
 });
 
