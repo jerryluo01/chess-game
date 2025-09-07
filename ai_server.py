@@ -14,7 +14,7 @@ def get_ai_move():
     board_input = data["board_input"]  
     turn = len(move_log) % 2 == 0
     try: 
-        move = ai.translateMove(board_input,ai.minimax(ai.translateMovelog(move_log), 4, -math.inf, math.inf, turn)[0].uci())
+        move = ai.translateMove(board_input,ai.minimax(ai.translateMovelog(move_log), 3, -math.inf, math.inf, turn)[0].uci())
 
     except TypeError as e:
         return
