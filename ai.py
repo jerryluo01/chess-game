@@ -280,24 +280,11 @@ square_to_index = {v: k for k, v in index_to_square.items()}
 def translateMovelog(moveLog):
     board = chess.Board()
     for move in moveLog:
-        #if len(move) > 5:
         moves = str(index_to_square[int(move[0:2])]) + str(index_to_square[int(move[3:5])])+(str(move[5]) if len(move) > 5 else "")
-        #piece = board.piece_at(move.from_square)
-        #if piece and piece.piece_type == chess.PAWN:
-        #    if (chess.square_rank(move.from_square) == 6 and chess.square_rank(move.to_square) == 7) or (chess.square_rank(move.from_square) == 6 and chess.square_rank(move.to_square) == 7):
-        #        move = chess.Move(move.from_square, move.to_square, promotion=chess.QUEEN)
         board.push_uci(moves)
-        # board.push_uci("f2f4")
+
     return board
 
-
-# print(custom_string_to_fen("rnbqkb0rppppn00p000000p00000000Q000000000000P000PPP00PPPRNB0KBNR"))
-#print(minimax(translateMovelog(['54P38', '06n21', '61B47', '21n06', '62N45', '06n21']), 5, -math.inf, math.inf, False)[0].uci())
-#print(valueBoard(translateBoard(chess.Board())))
-#print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '52P44', '14p22', '59Q31']))
-#'31Q15'
-
-# print(translateMovelog(['53P37', '12p28', '37P28', '13p21', '52P44', '14p22', '59Q31']))
 
 def translateMove(board, move):
     return str(square_to_index[move[0:2]]) + board[square_to_index[move[0:2]]] + str(square_to_index[move[2:4]])
