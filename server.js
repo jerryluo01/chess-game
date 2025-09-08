@@ -18,6 +18,10 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
+// app.get("/ping", (req, res) => {
+//    res.send("pong");  
+// });
+
 server.listen(port, () => {
     console.log("Server working");
 });

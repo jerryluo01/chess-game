@@ -1,1 +1,202 @@
-dynamic front end
+# import math
+# import random
+# from flask import Flask, request, jsonify
+# from flask_cors import CORS
+# import ai
+# import os
+# import chess.polyglot
+
+# app = Flask(__name__)
+# CORS(app)
+
+# @app.route("/move", methods=["POST"])
+# def get_ai_move():
+#     data = request.json
+#     move_log = data["move_log"]
+#     board_input = data["board_input"]  
+#     turn = len(move_log) % 2 == 0
+#     positionBoard = ai.translateMovelog(move_log)
+
+#     try:
+#         # Try book move first
+#         # with chess.polyglot.open_reader("book.bin") as reader:
+#         #      entries = list(reader.find_all(positionBoard))
+#         #      if entries:
+#         #          entry = random.choice(entries)
+#         #          move = ai.translateMove(entry.move)[0].uci() 
+#         #          print("Book move chosen:", move)
+#         #          return jsonify({"move": move})
+
+#         # If no book move, fallback to minimax
+#         move = ai.translateMove(board_input,ai.minimax(ai.translateMovelog(move_log), 3, -math.inf, math.inf, turn)[0].uci())
+#         print("Minimax move chosen:33", move)
+#         return jsonify({"move": move})
+
+#     except Exception as e:
+#         print("Error in get_ai_move:", e)
+#         return jsonify({"error": str(e)}), 500
+
+# if __name__ == "__main__":
+#     port = int(os.environ.get("PORT", 5000))
+#     app.run(host="0.0.0.0", port=port)
+
+# def RelativePieceValues(PieceType, index,endgame):
+#     match PieceType:
+#         case "R":
+#             WhiteRook = ("+00+00+00+00+00+00+00+00"
+#                              "+05+10+10+10+10+10+10+05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "+00+00+00+00+00+00+00+00")
+#             displacement = int(WhiteRook[index * 3: index * 3 + 3])
+#             return (500 + displacement)
+#         case "N":
+#             WhiteKnight = ("-50-40-30-30-30-30-40-50"
+#                                "-40-20+00+00+00+00-20-40"
+#                                "-30+00+10+15+15+10+00-30"
+#                                "-30+05+15+20+20+15+05-30"
+#                                "-30+00+15+20+20+15+00-30"
+#                                "-30+05+10+15+15+10+05-30"
+#                                "-40-20+00+05+05+00-20-40"
+#                                "-50-40-30-30-30-30-40-50")
+#             displacement = int(WhiteKnight[index * 3: index * 3 + 3])
+#             return (320 + displacement)
+#         case "B":
+#             WhiteBishop = ("-20-10-10-10-10-10-10-20"
+#                                "-10+00+00+00+00+00+00-10"
+#                                "-10+00+05+10+10+05+00-10"
+#                                "-10+05+05+10+10+05+05-10"
+#                                "-10+00+10+10+10+10+00-10"
+#                                "-10+10+10+10+10+10+10-10"
+#                                "-10+05+00+00+00+00+05-10"
+#                                "-20-10-10-10-10-10-10-20")
+
+#             displacement = int(WhiteBishop[index * 3: index * 3 + 3]) 
+#             return (330 + displacement)
+#         case "Q":
+#             WhiteQueen = ("-20-10-10-05-05-10-10-20"
+#                               "-10+00+00+00+00+00+00-10"
+#                               "-10+00+05+05+05+05+00-10"
+#                               "-05+00+05+05+05+05+00-05"
+#                               "+00+00+05+05+05+05+00-05"
+#                               "-10+05+05+05+05+05+00-10"
+#                               "-10+00+05+00+00+00+00-10"
+#                               "-20-10-10-05-05-10-10-20")
+#             displacement = int(WhiteQueen[index * 3: index * 3 + 3]) 
+#             return (900 + displacement)
+#         case "K":
+#             if (not endgame):
+#                 WhiteKing = ("-30-40-40-50-50-40-40-30"
+#                                 "-30-40-40-50-50-40-40-30"
+#                                 "-30-40-40-50-50-40-40-30"
+#                                 "-30-40-40-50-50-40-40-30"
+#                                 "-20-30-30-40-40-30-30-20"
+#                                 "-10-20-20-20-20-20-20-10"
+#                                 "+20+20+00+00+00+00+20+20"
+#                                 "+20+30+10+00+00+10+30+20")
+#             else:
+#                 WhiteKing = (
+#                     "-50-40-30-20-20-30-40-50"
+#                     "-30-20-10+00+00-10-20-30"
+#                     "-30-10+20+30+30+20-10-30"
+#                     "-30-10+30+40+40+30-10-30"
+#                     "-30-10+30+40+40+30-10-30"
+#                     "-30-10+20+30+30+20-10-30"
+#                     "-30-30+00+00+00+00-30-30"
+#                     "-50-30-30-30-30-30-30-50"
+#                 )
+#             displacement = int(WhiteKing[index * 3: index * 3 + 3])
+#             return (20000 + displacement)
+#         case "P":
+#             WhitePawn = ("+00+00+00+00+00+00+00+00"
+#                              "+50+50+50+50+50+50+50+50"
+#                              "+10+10+20+30+30+20+10+10"
+#                              "+05+05+10+25+25+10+05+05"
+#                              "+00+00+00+20+20+00+00+00"
+#                              "+05-05-10+00+00-10-05+05"
+#                              "+05+10+10-20-20+10+10+05"
+#                              "+00+00+00+00+00+00+00+00")
+#             displacement = int(WhitePawn[index * 3: index * 3 + 3])
+
+#             return (100 + displacement)
+#         case "r":
+#             BlackRook = ("+00+00+00+05+05+00+00+00"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "-05+00+00+00+00+00+00-05"
+#                              "+05+10+10+10+10+10+10+05"
+#                              "+00+00+00+00+00+00+00+00")
+#             displacement = int(BlackRook[index * 3: index * 3 + 3]) 
+#             return -(500 + displacement)
+#         case "n":
+#             BlackKnight = ("-50-40-30-30-30-30-40-50"
+#                                "-40-20+00+05+05+00-20-40"
+#                                "-30-05+10+15+15+10+05-30"
+#                                "-30+00+15+20+20+15-00-30"
+#                                "-30+05+15+20+20+15+05-30"
+#                                "-30+00+10+15+15+10+00-30"
+#                                "-40-20+00+00+00+00-20-40"
+#                                "-50-40-30-30-30-30-40-50")
+#             displacement = int(BlackKnight[index * 3: index * 3 + 3]) 
+#             return -(320 + displacement)
+#         case "b":
+#             BlackBishop = ("-20-10-10-10-10-10-10-20"
+#                                "-10+05+00+00+00+00+05-10"
+#                                "-10+10+10+10+10+10+10-10"
+#                                "-10+00+10+10+10+10+00-10"
+#                                "-10+05+05+10+10+05+05-10"
+#                                "-10+05+05+10+10+05+05-10"
+#                                "-10+00+00+00+00+00+00-10"
+#                                "-20-10-10-10-10-10-10-20")
+#             displacement = int(BlackBishop[index * 3: index * 3 + 3]) 
+#             return -(330 + displacement)
+#         case "q":
+#             BlackQueen = ("-20-10-10-05-05-10-10-20"
+#                               "-10+00+05+00+00+00+00-10"
+#                               "-10+05+05+05+05+05+00-10"
+#                               "+00+00+05+05+05+05+00-05"
+#                               "-05+00+05+05+05+05+00-05"
+#                               "-10+00+05+05+05+05+00-10"
+#                               "-10+00+00+00+00+00+00-10"
+#                               "-20-10-10-05-05-10-10-20")
+#             displacement = int((BlackQueen[index * 3: index * 3 + 3])) 
+#             return -(900 + displacement)
+#         case "k":
+#             if (not endgame):
+#                 BlackKing = ("+20+30+10+00+00+10+30+20"
+#                               "+20+20+00+00+00+00+20+20"
+#                               "-10-20-20-20-20-20-20-10"
+#                               "-20-30-30-40-40-30-30-20"
+#                               "-30-40-40-50-50-40-40-30"
+#                               "-30-40-40-50-50-40-40-30"
+#                               "-30-40-40-50-50-40-40-30"
+#                               "-30-40-40-50-50-40-40-30")
+#             else:
+#                 BlackKing = ("+50+30+30+30+30+30+30+50"
+#                     "+30+30+00+00+00+00+30+30"
+#                     "+30+10-20-30-30-20+10+30"
+#                     "+30+10-30-40-40-30+10+30"
+#                     "+30+10-30-40-40-30+10+30"
+#                     "+30+10-20-30-30-20+10+30"
+#                     "+30+20+10+00+00+10+20+30"
+#                     "+50+40+30+20+20+30+40+50")
+
+#             displacement = int(BlackKing[index * 3: index * 3 + 3])
+#             return -(20000 + displacement)
+#         case "p":
+#             BlackPawn = ("+00+00+00+00+00+00+00+00"
+#                              "+50+50+50+50+50+50+50+50"
+#                              "+10+10+20+30+30+20+10+10"
+#                              "+05+05+10+25+25+10+05+05"
+#                              "+00+00+00+20+20+00+00+00"
+#                              "+05-05-10+00+00-10-05+05"
+#                              "+05+10+10-20-20+10+10+05"
+#                              "+00+00+00+00+00+00+00+00")
+#             displacement = int(BlackPawn[index * 3: index * 3 + 3]) 
+#             return -(100 + displacement)
+#     return 0

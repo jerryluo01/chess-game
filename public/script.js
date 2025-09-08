@@ -16,12 +16,31 @@ let numberOfPlayers = 0;
 let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
-let serverUrl;
-if (window.location.hostname === "localhost") {
-    serverUrl = "http://localhost:5500";
-} else {
-    serverUrl = "https://chess-game-pwkg.onrender.com";
-}
+let serverUrl = "https://chess-game-pwkg.onrender.com";
+
+// async function getServerUrl() {
+//     try {
+//         const res = await fetch("http://localhost:5500/", { method: "GET" });
+//         if (res.ok) {
+//             return "http://localhost:5500";
+//         }
+//     } catch (e) {
+//         return "https://chess-game-pwkg.onrender.com";
+//     }
+//     return "https://chess-game-pwkg.onrender.com";
+// }
+
+// (async () => {
+//     serverUrl = await getServerUrl();
+//     console.log("Server URL set to:", serverUrl);
+// })();
+
+// serverUrl 
+// // if (window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1")) {
+// //     serverUrl = "http://localhost:5500";
+// // } else {
+// //     serverUrl = "https://chess-game-pwkg.onrender.com";
+// // }
 
 let mode = localStorage.getItem("gameMode");
 console.log(mode);
@@ -675,9 +694,13 @@ function positionUpdate(ChessBoardPosition) {
     }
 }
 async function getAIMove(movesLog, board) {
+    // console.log(serverUrl)
+    // console.log("fefef",window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1"))
+    // link =  window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1")
+    //        ? "http://127.0.0.1:5000/move"
+    //        : "https://chess-game-backend-gl0l.onrender.com/move";
     try {
-        const response = await fetch(
-            "https://chess-game-backend-gl0l.onrender.com/move",
+        const response = await fetch("http://127.0.0.1:5000/move",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
