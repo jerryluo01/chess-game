@@ -17,6 +17,7 @@ let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
 let serverUrl = "https://chess-game-pwkg.onrender.com";
+//let serverUrl = "http://localhost:5500/";
 
 // async function getServerUrl() {
 //     try {
@@ -91,8 +92,8 @@ function createSquare() {
         div.classList.add("square");
         div.id = `${i}`;
         div.addEventListener("click", handleClick);
-        if ((r + c) % 2 === 0) div.style.backgroundColor = "#FFFFFF";
-        else div.style.backgroundColor = "#8CA2AD";
+        if ((r + c) % 2 === 0) div.style.backgroundColor = "rgb(184,139,74,255)";
+        else div.style.backgroundColor = "rgb(228,193,111,255)";
         cont.appendChild(div);
     }
 }
@@ -269,11 +270,11 @@ function handleClick(e) {
             if (!selected) {
                 sound.play();
 
-                e.target.style.border = "3px blue double";
+                e.target.style.border = "3px white double";
 
                 arr.forEach((square) => {
                     const id = document.getElementById(square);
-                    id.style.border = "3px rgba(24, 197, 255, 1) double";
+                    id.style.border = "3px white double";
                     selected = true;
                 });
 
@@ -294,11 +295,11 @@ function handleClick(e) {
                 selectedPiece = null;
             } else {
                 sound.play();
-                e.target.style.border = "3px blue double";
+                e.target.style.border = "3px white double";
 
                 arr.forEach((square) => {
                     const id = document.getElementById(square);
-                    id.style.border = "3px rgba(24, 197, 255, 1) double";
+                    id.style.border = "3px white double";
                     selected = true;
                 });
 
@@ -700,7 +701,7 @@ async function getAIMove(movesLog, board) {
     //        ? "http://127.0.0.1:5000/move"
     //        : "https://chess-game-backend-gl0l.onrender.com/move";
     try {
-        const response = await fetch("http://127.0.0.1:5000/move",
+        const response = await fetch("https://chess-game-backend-gl0l.onrender.com/move",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

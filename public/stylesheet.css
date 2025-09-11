@@ -1,5 +1,6 @@
 html {
     user-select: none;
+    background-color: bisque;
 }
 
 .main-cont {
@@ -8,8 +9,10 @@ html {
     height: 88vh;
     display: flex;
     flex-wrap: wrap;
-    margin: auto;
-    outline: #8ca2ad solid 1px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 6vh;
+    
 }
 .square {
     width: 11vh;
@@ -60,8 +63,9 @@ html {
 .cont {
     height: 30%;
     width: 15%;
-    background-color: bisque;
-    border: solid black 1px;
+    background-color: rgb(150,163,110);
+    border: solid rgb(150,163,110) 1px;
+    border-radius: 11px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -70,7 +74,6 @@ html {
 }
 
 .options {
-    border: 1px solid black;
     cursor: pointer;
     margin-left: auto;
     margin-right: auto;
@@ -81,6 +84,16 @@ html {
     font-size: 20px;
     font-weight: bold;
     justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color:rgb(217, 216, 149);
+    border: 1px solid black;
+    border-radius: 11px;
+}
+
+.options:hover {
+    background-color: rgb(235, 233, 152);
 }
 
 .overlay {

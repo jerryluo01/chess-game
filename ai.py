@@ -123,7 +123,7 @@ EvaluationTables = {
 
     "KingMG" : [
     -65,  23,  16, -15, -56, -34,   2,  13,
-     29,  -1, -20,  -7,  -8,  -4, -38, -29,
+     29,  -1, -20,  -7,  -60,  -4, -38, -29,
      -9,  24,   2, -16, -20,   6,  22, -22,
     -17, -20, -12, -27, -30, -25, -14, -36,
     -49,  -1, -27, -39, -46, -44, -33, -51,
@@ -200,7 +200,7 @@ def RelativePieceValues(PieceType, index):
             return -valueEG, -valueMG
         case "k":
             valueEG = EvaluationTables["KingEG"][mirrorIndex]  
-            valueMG = EvaluationTables["KingMG"][mirrorIndex ]
+            valueMG = EvaluationTables["KingMG"][mirrorIndex]
             return -valueEG, -valueMG
         case "p":
             valueEG = (EvaluationTables["PawnEG"][mirrorIndex]+94) 

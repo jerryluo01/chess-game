@@ -1,4 +1,3 @@
-// let io;
 const body = document.querySelector("body");
 const pause = document.createElement("div");
 body.appendChild(pause);
