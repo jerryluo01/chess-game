@@ -363,6 +363,7 @@ function AIMoveMaker() {
         if (!aiMove) return;
         moveLog.push(aiMove);
         ChessBoardPosition = performMoves(aiMove, ChessBoardPosition);
+        console.log(ChessBoardPosition);
         sound.play();
         if (ChessBoardPosition.substring(0, 8).includes("P")) {
             c = ChessBoardPosition.indexOf("P", 0);
@@ -370,13 +371,19 @@ function AIMoveMaker() {
                 ChessBoardPosition.substring(0, c) +
                 "Q" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
+            moveLog.pop();
+            moveLog.push(aiMove + "Q");
+            console.log("C index", c);
         }
-        if (ChessBoardPosition.substring(56, 64).includes("P")) {
+        if (ChessBoardPosition.substring(56, 64).includes("p")) {
             c = ChessBoardPosition.indexOf("p", 56);
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, parseInt(c)) +
                 "q" +
                 ChessBoardPosition.substring(parseInt(c) + 1);
+            moveLog.pop();
+            moveLog.push(aiMove + "q");
+            console.log("C index", c);
         }
         positionUpdate(ChessBoardPosition);
     });
@@ -439,7 +446,7 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
         }
 
         let state = CheckmateAndStalemate(chessBoardPosition);
-        console.log(chessBoardPosition);
+        // console.log(chessBoardPosition);
         AlertCheckAndCheckMate(state);
     }
     return chessBoardPosition;

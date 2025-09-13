@@ -16,18 +16,21 @@ def get_ai_move():
     board_input = data["board_input"]  
     turn = len(move_log) % 2 == 0
     board = ai.translateMovelog(move_log)
+    print("movelog123", move_log)
+    print("board::", board)
     try: 
         with chess.polyglot.open_reader("performance.bin") as reader:
             entries = list(reader.find_all(board))
             if entries:
                 entry = random.choice(entries)
-                #print("bookset",entry.move.uci())
+                # print("bookset",entry.move.uci())
                 move = ai.translateMove(board_input, entry.move.uci()) 
-                #print("bookset",move)
+                print("bookset",move)
                 return jsonify({"move": move}) 
 
         move = ai.translateMove(board_input,ai.minimax(board, 3, -math.inf, math.inf, turn)[0].uci())
-        #print("Alpha beta", ai.translateMove(board_input,ai.minimax(board, 3, -math.inf, math.inf, turn)[0].uci()))
+        # print("bf translate", board_input,ai.minimax(board, 1, -math.inf, math.inf, turn)[0].uci())
+        print("Alpha beta", move)
         return jsonify({"move": move})
 
     except TypeError as e:

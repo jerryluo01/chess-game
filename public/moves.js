@@ -518,6 +518,9 @@ function promoted(e) {
             moveLog[moveLog.length - 1] = moveLog[moveLog.length - 1] + "b";
             break;
     }
+    if (CHESSAI) {
+        AIMoveMaker();
+    }
     //console.log(ChessBoardPosition);
     positionUpdate(ChessBoardPosition);
     promotion = false;
