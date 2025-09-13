@@ -210,25 +210,6 @@ def RelativePieceValues(PieceType, index):
 
 
 
-# def boolEndgame(board_str):
-#     if (board_str.count("Q") == 0 and board_str.count("q") == 0):
-#         return True
-#     if board_str.count("Q") > 0:
-#         if board_str.count("N") + board_str.count("B") + board_str.count("R") > 1:
-#             return False
-#     if board_str.count("q") > 0:
-#         if board_str.count("n") + board_str.count("b") + board_str.count("r") > 1:
-#             return False
-#     return True
-
-# def valueBoard(board):
-#     totalValue = 0
-#     endgame = boolEndgame(board)
-
-#     for i in range(len(board)):
-#         totalValue += RelativePieceValues(board[i], i,endgame)
-#     return totalValue
-
 
 def valueBoard(board):
     EGtotalValue = 0
@@ -242,19 +223,6 @@ def valueBoard(board):
         MGtotalValue += RelativePieceValues(board[i], i)[1]
     return ((MGtotalValue * phase) + (EGtotalValue * (24-phase)))/24
 
-# def moveScore(board, move):
-#     piece = board.piece_at(move.to_square)
-#     score = 0
-
-#     if piece:
-#         value = {chess.PAWN:1, chess.KNIGHT:3, chess.BISHOP:3,
-#                  chess.ROOK:5, chess.QUEEN:9, chess.KING:1000}
-#         score += value[piece.piece_type]  
-
-#     if move.promotion:
-#         score += 10 
-
-#     return score
 
 
 
@@ -270,14 +238,12 @@ def minimax(positionBoard, depth, alpha, beta, color):
     bestMove = None
     moves = list(positionBoard.legal_moves)
     random.shuffle(moves)
-    #recent_moves = [m.uci() for m in positionBoard.move_stack[-3:]]
-    #print("feeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",recent_moves)
 
     if color:
-        #moves.sort(key=lambda m: moveScore(positionBoard, m), reverse=True)
+
         maxEval = -math.inf
         for move in moves:
-            piece = board.piece_at(move.from_square)
+            piece = positionBoard.piece_at(move.from_square)
             if piece and piece.piece_type == chess.PAWN:
                 if chess.square_rank(move.from_square) == 6 and chess.square_rank(move.to_square) == 7:
                     move = chess.Move(move.from_square, move.to_square, promotion=chess.QUEEN)
@@ -285,8 +251,7 @@ def minimax(positionBoard, depth, alpha, beta, color):
             _, eval = minimax(positionBoard, depth - 1, alpha, beta, False)
             positionBoard.pop()
 
-            #if move.uci() in recent_moves:
-            #     eval -= 1000
+        
 
             if eval > maxEval:
                 maxEval = eval
@@ -294,13 +259,21 @@ def minimax(positionBoard, depth, alpha, beta, color):
             alpha = max(alpha, eval)
             if beta <= alpha:
                 break
+
+        if bestMove is None:
+            # fallback: pick the first legal move so AI never crashes
+            legal_moves = list(positionBoard.legal_moves)
+            if legal_moves:
+                return legal_moves[0], maxEval
+            else:
+                return None, 0
         return bestMove, maxEval
 
     else:
-        #moves.sort(key=lambda m: moveScore(positionBoard, m))
+
         minEval = math.inf
         for move in moves:
-            piece = board.piece_at(move.from_square)
+            piece = positionBoard.piece_at(move.from_square)
             if piece and piece.piece_type == chess.PAWN:
                 if chess.square_rank(move.from_square) == 6 and chess.square_rank(move.to_square) == 7:
                     move = chess.Move(move.from_square, move.to_square, promotion=chess.QUEEN)
@@ -310,8 +283,6 @@ def minimax(positionBoard, depth, alpha, beta, color):
             _, eval = minimax(positionBoard, depth - 1, alpha, beta, True)
             positionBoard.pop()
 
-            #if move.uci() in recent_moves:
-            #    eval += 1000
             
             if eval < minEval:
                 minEval = eval
@@ -319,10 +290,18 @@ def minimax(positionBoard, depth, alpha, beta, color):
             beta = (min(beta, eval))
             if beta <= alpha:
                 break
+
+        if bestMove is None:
+            # fallback: pick the first legal move so AI never crashes
+            legal_moves = list(positionBoard.legal_moves)
+            if legal_moves:
+                return legal_moves[0], minEval
+            else:
+                return None, 0
         return bestMove, minEval
 
 
-# print(valueBoard(translateBoard(board)))
+
 index_to_square = {
     0: "a8", 1: "b8", 2: "c8", 3: "d8", 4: "e8", 5: "f8", 6: "g8", 7: "h8",
     8: "a7", 9: "b7", 10: "c7", 11: "d7", 12: "e7", 13: "f7", 14: "g7", 15: "h7",
@@ -351,4 +330,4 @@ def translateMove(board, move):
     return str(square_to_index[move[0:2]]) + board[square_to_index[move[0:2]]] + str(square_to_index[move[2:4]])
 
 
-#print(translateMove(translateBoard(board), "g1h3"))
+

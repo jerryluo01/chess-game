@@ -36,7 +36,7 @@ let serverUrl = "https://chess-game-pwkg.onrender.com";
 //     console.log("Server URL set to:", serverUrl);
 // })();
 
-// serverUrl 
+// serverUrl
 // // if (window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1")) {
 // //     serverUrl = "http://localhost:5500";
 // // } else {
@@ -92,7 +92,8 @@ function createSquare() {
         div.classList.add("square");
         div.id = `${i}`;
         div.addEventListener("click", handleClick);
-        if ((r + c) % 2 === 0) div.style.backgroundColor = "rgb(184,139,74,255)";
+        if ((r + c) % 2 === 0)
+            div.style.backgroundColor = "rgb(184,139,74,255)";
         else div.style.backgroundColor = "rgb(228,193,111,255)";
         cont.appendChild(div);
     }
@@ -329,9 +330,6 @@ function handleClick(e) {
 
                 if (ChessBoardPosition.substring(0, 8).includes("P")) {
                     promotion = true;
-                    //console.log("efefefe")
-                    //console.log(EnemyPiece);
-                    //console.log(AllyPiece);
                     pawnPromotion(
                         ChessBoardPosition.substring(0, 8).indexOf("P"),
                         EnemyPiece
@@ -701,16 +699,14 @@ async function getAIMove(movesLog, board) {
     //        ? "http://127.0.0.1:5000/move"
     //        : "https://chess-game-backend-gl0l.onrender.com/move";
     try {
-        const response = await fetch("https://chess-game-backend-gl0l.onrender.com/move",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    move_log: movesLog,
-                    board_input: board,
-                }), // send move log
-            }
-        );
+        const response = await fetch("http://127.0.0.1:5000/move", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                move_log: movesLog,
+                board_input: board,
+            }), // send move log
+        });
 
         const data = await response.json();
         return data.move;
