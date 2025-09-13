@@ -706,14 +706,17 @@ async function getAIMove(movesLog, board) {
     //        ? "http://127.0.0.1:5000/move"
     //        : "https://chess-game-backend-gl0l.onrender.com/move";
     try {
-        const response = await fetch("http://127.0.0.1:5000/move", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                move_log: movesLog,
-                board_input: board,
-            }), // send move log
-        });
+        const response = await fetch(
+            "https://chess-game-backend-gl0l.onrender.com/move",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    move_log: movesLog,
+                    board_input: board,
+                }), // send move log
+            }
+        );
 
         const data = await response.json();
         return data.move;
