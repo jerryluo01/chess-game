@@ -16,8 +16,8 @@ let numberOfPlayers = 0;
 let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
-// let serverUrl = "https://chess-game-pwkg.onrender.com";
-let serverUrl = "http://localhost:5500/";
+let serverUrl = "https://chess-game-pwkg.onrender.com";
+// let serverUrl = "http://localhost:5500/";
 
 // async function getServerUrl() {
 //     try {
