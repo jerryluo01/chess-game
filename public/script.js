@@ -52,6 +52,7 @@ if (mode === "pve") {
     let color = localStorage.getItem("color");
     if (color === "white") {
         AIPiece = "rnbkqp";
+        const cont = document.querySelector(".main-cont");
         cont.style.flexWrap = "wrap";
     } else {
         AIPiece = "RNBKQP";
