@@ -3,7 +3,6 @@ btn.forEach((btn) => btn.addEventListener("click", play));
 
 function play(e) {
     const type = e.target.className;
-    console.log(type);
     if (type === "pve") {
         const cont = document.querySelector(".cont");
         const body = document.querySelector("body");

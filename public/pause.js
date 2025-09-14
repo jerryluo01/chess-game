@@ -68,15 +68,5 @@ function quit() {
         elem.remove();
     });
     reset();
-    // if (mode === "online") {
-    //     socket.on("io", (data) => {
-    //         io = data;
-    //     });
-    //     io.on("disconnect", () => {
-    //         connectedUsers--;
-    //         console.log(`Connected Users: ${connectedUsers}`);==================CHECKOUT
-    //         console.log(`Player disconnected: ${socket.id}`);
-    //     });
-    // }
     window.location.href = "index.html";
 }

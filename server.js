@@ -2,8 +2,7 @@ const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, { cors: { origin: "*" } });
-//let connectedUsers = 0
-const playerColors = {}; // socket.id -> color
+const playerColors = {};
 const colors = ["rnbkqp", "RNBKQP"];
 let moveLogServer = [];
 let chessBoard = "";
@@ -18,10 +17,6 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
-// app.get("/ping", (req, res) => {
-//    res.send("pong");
-// });
-
 server.listen(port, () => {
     console.log("Server working");
 });
@@ -34,7 +29,7 @@ io.on("connection", (socket) => {
         console.log(`Connection refused: ${socket.id}`);
         socket.emit("full", "Server is full. Try again later.");
         socket.emit("full", 1);
-        socket.disconnect(true); // immediately disconnect
+        socket.disconnect(true);
         return;
     }
     const assignedColor = colors.pop();
@@ -46,18 +41,14 @@ io.on("connection", (socket) => {
     } else {
         EnemyPiece = "RNBKQP";
     }
-    //EnemyPiece = colors[(connectedUsers === 0) ? 1 : 0]
 
-    //console.log(AllyPiece)
-    //console.log(EnemyPiece)
-    //connectedUsers++
     socket.on("disconnect", () => {
         for (let i = 0; i < players.length; i++) {
             if (players[i] === socket.id) players.splice(i, 1);
         }
         console.log(players);
         if (assignedColor) {
-            colors.push(assignedColor); // return to pool
+            colors.push(assignedColor);
         }
         const bothPlayersConnected = colors.length === 0;
         console.log(`user disconnected: ${socket.id}`);

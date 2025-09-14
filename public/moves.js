@@ -189,10 +189,8 @@ function kingPossibleMoves(color, position, boardPos = ChessBoardPosition) {
                 boardPos[56] === "R" &&
                 !check
             ) {
-                //console.log("deefefe")
                 positionIndexList.push(58);
             }
-            //console.log(boardPos[63]);
             if (
                 moveLog.every((item) => !item.includes("63R")) &&
                 boardPos[61] === "0" &&
@@ -200,9 +198,6 @@ function kingPossibleMoves(color, position, boardPos = ChessBoardPosition) {
                 boardPos[63] === "R" &&
                 !check
             ) {
-                //console.log(check)
-                //console.log(squareAttack);
-                //console.log("dedefefef")
                 positionIndexList.push(62);
             }
         }
@@ -399,13 +394,15 @@ function pawnPromotion(column, AllyPiece) {
         div.classList.add("square", "promotion");
         div.dataset.c = column;
         div.style.position = "absolute";
-        // console.log("aaa", cont.style.flexWrap);
         const isWhite = AllyPiece === "RNBKQP";
-        const isWrap = cont.style.flexWrap === "wrap";
+        const isWrap =
+            cont.style.flexWrap === "" || cont.style.flexWrap === "wrap";
 
-        console.log("dsafjlkasdjlfdasjflasdklfjaskd");
-        const reverse = (isWrap && !isWhite) || (!isWrap && isWhite);
-        div.style.top = `${(reverse ? 7 - i : i) * 11}vh`;
+        if (isWrap) {
+            div.style.top = `${(isWhite ? i : 7 - i) * 11}vh`;
+        } else {
+            div.style.top = `${(isWhite ? 7 - i : i) * 11}vh`;
+        }
 
         switch (i) {
             case 0:
@@ -445,16 +442,10 @@ function pawnPromotion(column, AllyPiece) {
 }
 
 function promoted(e) {
-    console.log("frfrhrfhjrfj");
     const id = e.currentTarget.id;
     const c = e.currentTarget.dataset.c;
-    //console.log(ChessBoardPosition);
-    //console.log(ChessBoardPosition.substring(0, c));
-    //console.log(ChessBoardPosition.substring(parseInt(c) + 1));
-    //console.log(column);
     switch (id) {
         case "ql":
-            //console.log("bbbbb");
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "Q" +
@@ -514,7 +505,6 @@ function promoted(e) {
     if (CHESSAI) {
         AIMoveMaker();
     }
-    //console.log(ChessBoardPosition);
     positionUpdate(ChessBoardPosition);
     promotion = false;
     if (multiplayer) {
@@ -538,18 +528,4 @@ function promoted(e) {
         document.getElementById("nd").remove();
         document.getElementById("rd").remove();
     }
-    //console.log(id);
 }
-// } else {
-//     for (let i = 0; i < 4; i++) {
-//         const div = document.createElement("div");
-//         cont.appendChild(div);
-//         div.classList.add("square", "promotion");
-//         div.style.position = "absolute";
-//         div.style.top = `${7 - i * 11}vh`;
-//         div.style.left = `${row * 11}vh`;
-//     }
-// }
-
-//pawnPromotion(2, "RBNKQP");
-//pawnPromotion(6, "rbnkqp");

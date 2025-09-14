@@ -17,37 +17,10 @@ let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
 let serverUrl = "https://chess-game-pwkg.onrender.com";
-// let serverUrl = "http://localhost:5500/";
-
-// async function getServerUrl() {
-//     try {
-//         const res = await fetch("http://localhost:5500/", { method: "GET" });
-//         if (res.ok) {
-//             return "http://localhost:5500";
-//         }
-//     } catch (e) {
-//         return "https://chess-game-pwkg.onrender.com";
-//     }
-//     return "https://chess-game-pwkg.onrender.com";
-// }
-
-// (async () => {
-//     serverUrl = await getServerUrl();
-//     console.log("Server URL set to:", serverUrl);
-// })();
-
-// serverUrl
-// // if (window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1")) {
-// //     serverUrl = "http://localhost:5500";
-// // } else {
-// //     serverUrl = "https://chess-game-pwkg.onrender.com";
-// // }
 
 let mode = localStorage.getItem("gameMode");
-console.log(mode);
 if (mode === "pve") {
     multiplayer = false;
-    //console.log("rgrthgreinjgrhefjggrhefnj")
     CHESSAI = true;
     let color = localStorage.getItem("color");
     if (color === "white") {
@@ -112,7 +85,6 @@ function legalMoves(possibleMoves, ChessBoardPosition, piece, position) {
     let tempChessBoardPosition;
     let possibleMovesTemp;
     let possibleMovesListTemp = possibleMoves;
-    //console.log(possibleMoves);
     for (let i = 0; i < possibleMoves.length; i++) {
         tempChessBoardPosition = ChessBoardPosition;
         possibleMovesTemp =
@@ -150,7 +122,6 @@ if (multiplayer) {
         ChessBoardPosition = data;
         positionUpdate(ChessBoardPosition);
         socket.emit("GameOver", CheckmateAndStalemate(ChessBoardPosition));
-        //console.log("Checkmate/Stalemate:", CheckmateAndStalemate(ChessBoardPosition))
     });
 
     socket.on("moves", (data) => {
@@ -160,14 +131,11 @@ if (multiplayer) {
 
     socket.on("full", (data) => {
         wait(true);
-        console.log("dhehe", data);
     });
 
     socket.on("GameOver", (data) => {
         console.log("Checkmate/Stalemate:", data);
-        // socket.disconnect();
         AlertCheckAndCheckMate(data, true);
-        //moveLog = data
     });
 
     socket.on("Promotion", (data) => {
@@ -176,11 +144,8 @@ if (multiplayer) {
 
     socket.on("numberOfPlayers", (data) => {
         numberOfPlayers = data;
-        console.log("numberOfPlayers123", data);
+        console.log("numberOfPlayers", data);
         if (numberOfPlayers < 2) wait();
-        // else if (numberOfPlayers > 2) {
-        //   wait(true);
-        // }
     });
 
     socket.on("AllyPiece", (data) => {
@@ -219,15 +184,8 @@ function wait(full = false) {
     div.style.width = "60%";
     div.style.height = "60%";
     overlay.appendChild(div);
-    //if full : div
-    // AllyPiece = isUpperCase ? "rnbkqp" : "RNBKQP";
 
     div.textContent = full ? "Server Full" : "Waiting for second player ...";
-    // if (full) {
-    //     div.textContent = "Server Full";
-    // } else {
-    //     div.textContent = "Waiting for second player ...";
-    // }
     const quitBtn = document.createElement("div");
     quitBtn.classList.add("options");
     quitBtn.textContent = "Main Menu";
@@ -245,11 +203,6 @@ function wait(full = false) {
 }
 
 function handleClick(e) {
-    // if (multiplayer){
-    //     socket.on('moves', (data) => {
-    //         moveLog = data;
-    //     })
-    // }
     console.log(moveLog);
     const divId = e.target.id;
     if (
@@ -264,20 +217,17 @@ function handleClick(e) {
         multiplayer === false
     ) {
         if (
-            //!selected &&
             AllyPiece.includes(ChessBoardPosition[divId]) &&
             !possMoves.includes(parseInt(divId)) &&
             promotion === false &&
             AllyPiece !== AIPiece
         ) {
-            //const arr = possibleMoves(ChessBoardPosition[divId], parseInt(divId));
             const arr = legalMoves(
                 possibleMoves(ChessBoardPosition[divId], parseInt(divId)),
                 ChessBoardPosition,
                 ChessBoardPosition[divId],
                 parseInt(divId)
             );
-            //console.log(legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId)));
 
             highlighted.forEach((prev) => {
                 const id = document.getElementById(prev);
@@ -337,10 +287,8 @@ function handleClick(e) {
                     ChessBoardPosition
                 );
                 positionUpdate(ChessBoardPosition);
-                //console.log(moveLog);
                 moveLog.push(RecentMove);
                 promotionPieceInput = multiplayer ? AllyPiece : EnemyPiece;
-                //console.log(moveLog);
 
                 if (ChessBoardPosition.substring(0, 8).includes("P")) {
                     promotion = true;
@@ -382,7 +330,6 @@ function AIMoveMaker() {
         if (!aiMove) return;
         moveLog.push(aiMove);
         ChessBoardPosition = performMoves(aiMove, ChessBoardPosition);
-        console.log(ChessBoardPosition);
         sound.play();
         if (ChessBoardPosition.substring(0, 8).includes("P")) {
             c = ChessBoardPosition.indexOf("P", 0);
@@ -392,7 +339,6 @@ function AIMoveMaker() {
                 ChessBoardPosition.substring(parseInt(c) + 1);
             moveLog.pop();
             moveLog.push(aiMove + "Q");
-            console.log("C index", c);
         }
         if (ChessBoardPosition.substring(56, 64).includes("p")) {
             c = ChessBoardPosition.indexOf("p", 56);
@@ -402,7 +348,6 @@ function AIMoveMaker() {
                 ChessBoardPosition.substring(parseInt(c) + 1);
             moveLog.pop();
             moveLog.push(aiMove + "q");
-            console.log("C index", c);
         }
         positionUpdate(ChessBoardPosition);
     });
@@ -413,8 +358,6 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
     afterPos = parseInt(moves.substring(3, 5));
 
     PieceEaten = chessBoardPosition[parseInt(moves.substring(3, 5))];
-
-    //let BoardBeforeMove = chessBoardPosition
 
     chessBoardPosition =
         chessBoardPosition.substring(0, afterPos) +
@@ -446,7 +389,6 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
                 chessBoardPosition.substring(parseInt(afterPos) + 8 + 1);
         }
     }
-    //positionUpdate(chessBoardPosition)
     possMoves = [];
 
     if (realBoard) {
@@ -465,7 +407,6 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
         }
 
         let state = CheckmateAndStalemate(chessBoardPosition);
-        // console.log(chessBoardPosition);
         AlertCheckAndCheckMate(state);
     }
     return chessBoardPosition;
@@ -481,7 +422,6 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
     else if (state === 3) message = "STALEMATE";
     else return;
 
-    // setTimeout(() => {
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
     const div = document.createElement("div");
@@ -524,7 +464,6 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
     // }, 0);
 }
 function reset() {
-    //console.log("RESET")
     AllyPiece = "RNBKQP";
     EnemyPiece = "rnbkqp";
     selected = false;
@@ -540,6 +479,11 @@ function reset() {
     const div = document.querySelectorAll(".square");
     div.forEach((square) => {
         square.style.border = "";
+    });
+    promotion = false;
+    ["ql", "rl", "nl", "bl", "qd", "rd", "nd", "bd"].forEach((id) => {
+        const exists = document.getElementById(id);
+        if (exists) exists.remove();
     });
 }
 
@@ -575,7 +519,6 @@ function possibleMoves(piece, position, chessBoard = ChessBoardPosition) {
 }
 
 function SquaresUnderAttack(chessBoardPosition) {
-    //console.log(chessBoardPosition)
     let SquaresUnderAttackList = new Set();
     let Moves;
     for (let i = 0; i < chessBoardPosition.length; i++) {
@@ -592,11 +535,11 @@ function SquaresUnderAttack(chessBoardPosition) {
                 );
             }
             for (let move of Moves) {
-                SquaresUnderAttackList.add(move); // only unique values kept
+                SquaresUnderAttackList.add(move);
             }
         }
     }
-    //console.log(SquaresUnderAttackList);
+
     squareAttack = [...SquaresUnderAttackList];
     return squareAttack;
 }
@@ -628,8 +571,7 @@ function CheckmateAndStalemate(chessBoardPosPosition) {
                 i
             );
             for (let move of Moves) {
-                //  const arr = legalMoves(possibleMoves(ChessBoardPosition[divId], parseInt(divId)),ChessBoardPosition,ChessBoardPosition[divId],parseInt(divId))
-                potentialMovesList.add(move); // only unique values kept
+                potentialMovesList.add(move);
             }
         }
     }
@@ -719,11 +661,6 @@ function positionUpdate(ChessBoardPosition) {
     }
 }
 async function getAIMove(movesLog, board) {
-    // console.log(serverUrl)
-    // console.log("fefef",window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1"))
-    // link =  window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1")
-    //        ? "http://127.0.0.1:5000/move"
-    //        : "https://chess-game-backend-gl0l.onrender.com/move";
     try {
         const response = await fetch(
             "https://chess-game-backend-gl0l.onrender.com/move",
@@ -733,7 +670,7 @@ async function getAIMove(movesLog, board) {
                 body: JSON.stringify({
                     move_log: movesLog,
                     board_input: board,
-                }), // send move log
+                }),
             }
         );
 

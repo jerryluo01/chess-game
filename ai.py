@@ -1,7 +1,6 @@
 import chess
 import math
 import random
-#import EvaluationTable
 
 board = chess.Board()
 
@@ -261,7 +260,6 @@ def minimax(positionBoard, depth, alpha, beta, color):
                 break
 
         if bestMove is None:
-            # fallback: pick the first legal move so AI never crashes
             legal_moves = list(positionBoard.legal_moves)
             if legal_moves:
                 return legal_moves[0], maxEval
@@ -292,7 +290,6 @@ def minimax(positionBoard, depth, alpha, beta, color):
                 break
 
         if bestMove is None:
-            # fallback: pick the first legal move so AI never crashes
             legal_moves = list(positionBoard.legal_moves)
             if legal_moves:
                 return legal_moves[0], minEval
