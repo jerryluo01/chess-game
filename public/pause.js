@@ -10,7 +10,6 @@ pause.append(bar1, bar2);
 pause.addEventListener("click", stop);
 
 function stop() {
-    console.log("caca");
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 

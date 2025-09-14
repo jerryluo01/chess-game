@@ -16,8 +16,8 @@ let numberOfPlayers = 0;
 let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
-let serverUrl = "https://chess-game-pwkg.onrender.com";
-//let serverUrl = "http://localhost:5500/";
+// let serverUrl = "https://chess-game-pwkg.onrender.com";
+let serverUrl = "http://localhost:5500/";
 
 // async function getServerUrl() {
 //     try {
@@ -52,6 +52,7 @@ if (mode === "pve") {
     let color = localStorage.getItem("color");
     if (color === "white") {
         AIPiece = "rnbkqp";
+        cont.style.flexWrap = "wrap";
     } else {
         AIPiece = "RNBKQP";
         const cont = document.querySelector(".main-cont");
@@ -168,6 +169,10 @@ if (multiplayer) {
         //moveLog = data
     });
 
+    socket.on("Promotion", (data) => {
+        promotion = data;
+    });
+
     socket.on("numberOfPlayers", (data) => {
         numberOfPlayers = data;
         console.log("numberOfPlayers123", data);
@@ -178,7 +183,13 @@ if (multiplayer) {
     });
 
     socket.on("AllyPiece", (data) => {
-        AllyPiece = data;
+        if (
+            !ChessBoardPosition.substring(0, 8).includes("P") &&
+            !ChessBoardPosition.substring(56, 64).includes("p")
+        ) {
+            AllyPiece = data;
+        }
+
         if (AllyPiece === "rnbkqp") {
             const cont = document.querySelector(".main-cont");
             cont.style.flexWrap = "wrap-reverse";
@@ -188,7 +199,12 @@ if (multiplayer) {
         }
     });
     socket.on("EnemyPiece", (data) => {
-        EnemyPiece = data;
+        if (
+            !ChessBoardPosition.substring(0, 8).includes("P") &&
+            !ChessBoardPosition.substring(56, 64).includes("p")
+        ) {
+            EnemyPiece = data;
+        }
     });
 }
 
@@ -322,28 +338,30 @@ function handleClick(e) {
                 positionUpdate(ChessBoardPosition);
                 //console.log(moveLog);
                 moveLog.push(RecentMove);
+                promotionPieceInput = multiplayer ? AllyPiece : EnemyPiece;
                 //console.log(moveLog);
-                if (multiplayer) {
-                    socket.emit("moves", moveLog);
-                    socket.emit("ChessboardPosition", ChessBoardPosition);
-                }
 
                 if (ChessBoardPosition.substring(0, 8).includes("P")) {
                     promotion = true;
                     pawnPromotion(
                         ChessBoardPosition.substring(0, 8).indexOf("P"),
-                        EnemyPiece
+                        promotionPieceInput
                     );
                 } else if (ChessBoardPosition.substring(56, 64).includes("p")) {
                     promotion = true;
                     pawnPromotion(
                         ChessBoardPosition.substring(56, 64).indexOf("p"),
-                        EnemyPiece
+                        promotionPieceInput
                     );
                 } else {
                     if (CHESSAI) {
                         AIMoveMaker();
                     }
+                }
+                if (multiplayer) {
+                    socket.emit("moves", moveLog);
+                    socket.emit("Promotion", promotion);
+                    socket.emit("ChessboardPosition", ChessBoardPosition);
                 }
             }
             highlighted.forEach((square) => {

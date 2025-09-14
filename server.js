@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 // app.get("/ping", (req, res) => {
-//    res.send("pong");  
+//    res.send("pong");
 // });
 
 server.listen(port, () => {
@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
     if (colors.length <= 0) {
         console.log(`Connection refused: ${socket.id}`);
         socket.emit("full", "Server is full. Try again later.");
-        io.emit("full", 1);
+        socket.emit("full", 1);
         socket.disconnect(true); // immediately disconnect
         return;
     }
@@ -75,6 +75,10 @@ io.on("connection", (socket) => {
 
     socket.on("moves", (data) => {
         io.emit("moves", data);
+    });
+
+    socket.on("Promotion", (data) => {
+        io.emit("Promotion", data);
     });
 
     socket.on("ChessboardPosition", (data) => {

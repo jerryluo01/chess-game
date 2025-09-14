@@ -399,46 +399,39 @@ function pawnPromotion(column, AllyPiece) {
         div.classList.add("square", "promotion");
         div.dataset.c = column;
         div.style.position = "absolute";
-        if (AllyPiece === "RNBKQP") {
-            div.style.top = `${i * 11}vh`;
-            switch (i) {
-                case 0:
-                    src = "piece/Chess_qlt60.png";
-                    div.id = "ql";
-                    break;
-                case 1:
-                    src = "piece/Chess_rlt60.png";
-                    div.id = "rl";
-                    break;
-                case 2:
-                    src = "piece/Chess_nlt60.png";
-                    div.id = "nl";
-                    break;
-                case 3:
-                    src = "piece/Chess_blt60.png";
-                    div.id = "bl";
-                    break;
-            }
-        } else {
-            div.style.top = `${(7 - i) * 11}vh`;
-            switch (i) {
-                case 0:
-                    src = "piece/Chess_qdt60.png";
-                    div.id = "qd";
-                    break;
-                case 1:
-                    src = "piece/Chess_rdt60.png";
-                    div.id = "rd";
-                    break;
-                case 2:
-                    src = "piece/Chess_ndt60.png";
-                    div.id = "nd";
-                    break;
-                case 3:
-                    src = "piece/Chess_bdt60.png";
-                    div.id = "bd";
-                    break;
-            }
+        // console.log("aaa", cont.style.flexWrap);
+        const isWhite = AllyPiece === "RNBKQP";
+        const isWrap = cont.style.flexWrap === "wrap";
+
+        console.log("dsafjlkasdjlfdasjflasdklfjaskd");
+        const reverse = (isWrap && !isWhite) || (!isWrap && isWhite);
+        div.style.top = `${(reverse ? 7 - i : i) * 11}vh`;
+
+        switch (i) {
+            case 0:
+                src = isWhite
+                    ? "piece/Chess_qlt60.png"
+                    : "piece/Chess_qdt60.png";
+                div.id = isWhite ? "ql" : "qd";
+                break;
+            case 1:
+                src = isWhite
+                    ? "piece/Chess_rlt60.png"
+                    : "piece/Chess_rdt60.png";
+                div.id = isWhite ? "rl" : "rd";
+                break;
+            case 2:
+                src = isWhite
+                    ? "piece/Chess_nlt60.png"
+                    : "piece/Chess_ndt60.png";
+                div.id = isWhite ? "nl" : "nd";
+                break;
+            case 3:
+                src = isWhite
+                    ? "piece/Chess_blt60.png"
+                    : "piece/Chess_bdt60.png";
+                div.id = isWhite ? "bl" : "bd";
+                break;
         }
 
         div.addEventListener("click", promoted);
@@ -524,9 +517,16 @@ function promoted(e) {
     //console.log(ChessBoardPosition);
     positionUpdate(ChessBoardPosition);
     promotion = false;
-    getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
-        console.log("AI move:", aiMove);
-    });
+    if (multiplayer) {
+        socket.emit("Promotion", promotion);
+        socket.emit("ChessboardPosition", ChessBoardPosition);
+        socket.emit("moves", moveLog);
+    }
+    if (CHESSAI) {
+        getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
+            console.log("AI move:", aiMove);
+        });
+    }
     if (id.includes("l")) {
         document.getElementById("ql").remove();
         document.getElementById("bl").remove();
