@@ -47,4 +47,7 @@ It features a custom chess engine powered by **minimax with alpha-beta pruning**
 -   **Pawn Promotion, Castling, En Passant** – Implemented according to chess rules.
 
 LINK: https://chess-game-pwkg.onrender.com (Start up may take time due to usage of free Render plan)
-Made in collaboration with @NamHo14
+
+## Built In Collaboration With
+
+- [@NamHo14](https://github.com/NamHo14)
