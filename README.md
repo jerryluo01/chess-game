@@ -39,12 +39,12 @@ It features a custom chess engine powered by **minimax with alpha-beta pruning**
 
 ## 🎮 Features
 
--   **Play vs AI** – Challenge an AI powered by minimax with alpha-beta pruning.
--   **Local Multiplayer** – Two players on the same device.
--   **Online Multiplayer** – Real-time 1v1 using **Socket.IO**.
--   **Game States** – Checkmate, stalemate, and insufficient material detection.
--   **Responsive Board** – Dynamic rendering of chess pieces and legal moves.
--   **Pawn Promotion, Castling, En Passant** – Implemented according to chess rules.
+-   **Play vs AI** - Challenge an AI powered by minimax with alpha-beta pruning.
+-   **Local Multiplayer** - Two players on the same device.
+-   **Online Multiplayer** - Real-time 1v1 using **Socket.IO**.
+-   **Game States** - Checkmate, stalemate, and insufficient material detection.
+-   **Responsive Board** - Dynamic rendering of chess pieces and legal moves.
+-   **Pawn Promotion, Castling, En Passant** - Implemented according to chess rules.
 
 LINK: https://chess-game-pwkg.onrender.com (Start up may take time due to usage of free Render plan)
 
