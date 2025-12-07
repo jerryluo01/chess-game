@@ -17,6 +17,8 @@ let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
 let serverUrl = "https://chess-game-pwkg.onrender.com";
+// AI server (used for /move). Keep this separate so we can wake it on page load
+const aiServerUrl = "https://chess-game-backend-gl0l.onrender.com";
 
 let mode = localStorage.getItem("gameMode");
 if (mode === "pve") {
@@ -663,7 +665,7 @@ function positionUpdate(ChessBoardPosition) {
 async function getAIMove(movesLog, board) {
     try {
         const response = await fetch(
-            "https://chess-game-backend-gl0l.onrender.com/move",
+            `${aiServerUrl}/move`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -680,6 +682,22 @@ async function getAIMove(movesLog, board) {
         console.error("Error fetching AI move:", error);
     }
 }
+
+// Wake the AI server as soon as the client loads so the first AI call isn't delayed by a sleeping host.
+// This is a fire-and-forget request; use GET to the root which is sufficient to wake most hosted apps.
+function wakeAiServer() {
+    try {
+        // Use no-cors so this won't throw CORS errors in the console, and don't await so it won't block UI.
+        fetch(`${aiServerUrl}/`, { method: "GET", mode: "no-cors", cache: "no-store" })
+            .then(() => console.log("AI server wake request sent"))
+            .catch(() => console.log("AI server wake request failed (likely CORS/no-cors response)"));
+    } catch (e) {
+        // ignore
+    }
+}
+
+// Try to wake AI server immediately (non-blocking).
+wakeAiServer();
 
 createSquare();
 positionUpdate(ChessBoardPosition);
